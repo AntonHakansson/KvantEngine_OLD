@@ -3,6 +3,7 @@
 #include <iostream>
 #include <chrono>
 #include <functional>
+#include <vector>
 
 // OpenGL / glew Headers
 #define GL3_PROTOTYPES 1
@@ -11,10 +12,19 @@
 // SDL2 Headers
 #include <SDL2/SDL.h>
 
-#include "entitySystem.hpp"
-#include "window.hpp"
+#include <eigen3/Eigen/Dense>
+
+#include <entitySystem.hpp>
+#include <window.hpp>
+
+#include <types/Vertex.hpp>
+#include <types/Texture.hpp>
+#include <types/Shader.hpp>
+#include <components/Material.hpp>
+#include <components/mesh.hpp>
 
 using namespace std;
+using namespace Kvant;
 
 using FrameTime = float;
 
@@ -30,8 +40,36 @@ struct Game {
   bool running;
   FrameTime lastFt{0.f}, currentSlice{0.f};
 
+  enum groups : std::size_t {
+    meshRenderers
+  };
+
+  Entity& createTriangle() {
+    auto& e(manager.addEntity());
+    e.addComponent<CMaterial>( Shader{"../src/shaders/default.vs", "../src/shaders/default.frag"} );
+
+    vector<Vertex> vertices;
+    vertices.push_back( Vertex{Vector3d{-0.5f, -0.5f, 0.0f}, Vector3d{0, 0, 0}, Vector2d{0, 0}} );
+    vertices.push_back( Vertex{Vector3d{0.5f, -0.5f, 0.0f}, Vector3d{0, 0, 0}, Vector2d{0, 0}} );
+    vertices.push_back( Vertex{Vector3d{0.0f, 0.5f, 0.0f}, Vector3d{0, 0, 0}, Vector2d{0, 0}} );
+
+    vector<GLuint> indices;
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(2);
+
+    vector<Texture> textures;
+
+    e.addComponent<CMeshFilter>(vertices, indices, textures);
+    e.addComponent<CMeshRenderer>();
+    e.addGroup(groups::meshRenderers);
+
+    return e;
+  }
+
   Game() {
     window.init();
+    createTriangle();
   }
 
   void run() {
@@ -51,8 +89,8 @@ struct Game {
 
       lastFt = ft;
 
-      auto ftSeconds(ft / 1000.f);
-      auto fps(1.f / ftSeconds);
+      // auto ftSeconds(ft / 1000.f);
+      // auto fps(1.f / ftSeconds);
     }
 
     cleanupPhase();
@@ -94,6 +132,10 @@ struct Game {
   }
 
   void drawPhase() {
+    auto& meshRenderers(manager.getEntitiesByGroup(groups::meshRenderers));
+    for(auto& mesh : meshRenderers) {
+      mesh->getComponent<CMeshRenderer>().draw();
+    }
   }
 
   void cleanupPhase() {

@@ -1,6 +1,6 @@
 # Specify the version being used aswell as the language
 cmake_minimum_required(VERSION 2.6)
-#Name your project here
+# Name your project here
 set(PNAME KvantEngine)
 project(${PNAME})
 
@@ -8,7 +8,7 @@ project(${PNAME})
 SET(CMAKE_C_COMPILER /usr/bin/gcc-4.9)
 SET(CMAKE_CXX_COMPILER /usr/bin/g++-4.9)
 
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
@@ -19,6 +19,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic-errors")
 
 include_directories(src)
+include_directories(third-party)
+
 add_executable(${PROJECT_NAME}
   src/window.cpp
   src/main.cpp
@@ -34,14 +36,20 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES})
 
 # OPENGL
 find_package(OpenGL REQUIRED)
+if (OPENGL_FOUND)
+  MESSAGE(Found OPENGL)
+endif()
 find_package(GLUT REQUIRED)
+if (GLUT_FOUND)
+  MESSAGE(Found GLUT)
+endif()
 include_directories(library ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
 target_link_libraries(
     ${PROJECT_NAME}
     ${OPENGL_gl_LIBRARY}
     ${GLUT_LIBRARIES} )
 
-#GLEW libraries
+# GLEW libraries
 find_package(GLEW REQUIRED)
 if (GLEW_FOUND)
   MESSAGE(Found glew)
@@ -49,4 +57,11 @@ if (GLEW_FOUND)
   target_link_libraries(${PROJECT_NAME} ${GLEW_LIBRARIES})
 endif()
 
-target_link_libraries(${PROJECT_NAME} -lboost_log)
+# Link to boost libraries
+find_package(Boost REQUIRED COMPONENTS system)
+target_link_libraries(${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY})
+add_definitions(-DBOOST_LOG_DYN_LINK)
+
+# Eigen
+#find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+#target_link_libraries (${PROJECT_NAME} Eigen3::Eigen)

@@ -23,7 +23,8 @@ namespace Kvant {
     config = j["window"].get<WindowConfig>();
 
     // Log read data
-    BOOST_LOG_TRIVIAL(info) << "Read window config. title: \"" << config.title << "\", width: " << config.width << ", height: " << config.height;
+    namespace spd = spdlog;
+    spdlog::get("console")->info("Read window config. title: \"{}\", width: {}, height: {}",  config.title, config.width, config.height);
   }
 
   void Window::saveConfig() {
@@ -41,7 +42,7 @@ namespace Kvant {
 
     // Initialize SDL's Video subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-      cout << "Failed to init SDL\n";
+      spdlog::get("console")->error("Failed to init SDL");
       return false;
     }
 
@@ -51,7 +52,8 @@ namespace Kvant {
 
       // Check that everything worked out okay
     if (!mainWindow) {
-      std::cout << "Unable to create window\n";
+      namespace spd = spdlog;
+      spdlog::get("console")->error("Unable to create window");
       CheckSDLError(__LINE__);
       return false;
     }
@@ -81,7 +83,7 @@ namespace Kvant {
 
     // 3.2 is part of the modern versions of OpenGL, but most video cards whould be able to run it
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
     // Turn on double buffering with a 24bit Z buffer.
     // You may need to change this to 16 or 32 for your system

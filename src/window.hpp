@@ -10,16 +10,14 @@
 // SDL2 Headers
 #include <SDL2/SDL.h>
 
-#define BOOST_LOG_DYN_LINK 1
-#include <boost/log/trivial.hpp>
-
-
 #include <string>       // std::string
 #include <fstream>      // std::ifstream
 #include <ostream>      // std::ostream
 
-#include "third-party/json.hpp"
-#include "util/error.hpp"
+#include <json/json.hpp>
+#include <util/error.hpp>
+
+#include <spdlog/spdlog.h>
 
 namespace Kvant {
   // for convenience

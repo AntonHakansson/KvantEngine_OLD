@@ -1,9 +1,18 @@
-#define BOOST_LOG_DYN_LINK 1
-#include <boost/log/trivial.hpp>
-#include "game.hpp"
+// c++ standard libraries
 
-int main() {
-  BOOST_LOG_TRIVIAL(info) << "Kvant Engine Start";
+// Third party
+#include <spdlog/spdlog.h>
+
+// Kvant
+#include <game.hpp>
+
+namespace spd = spdlog;
+int main(int, char**) {
+  // Console logger with color
+  auto console = spd::stdout_color_mt("console");
+  console->info("Welcome to KvantEngine!");
+
   Game{}.run();
+
   return 0;
 }

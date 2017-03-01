@@ -4,7 +4,7 @@
 #include <chrono>
 #include <functional>
 
-#include "entitySystem.hpp"
+#include <entitySystem.hpp>
 
 using namespace std;
 using namespace sf;

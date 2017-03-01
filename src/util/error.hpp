@@ -1,16 +1,22 @@
 #pragma once
 
+#include <string>
+
+#include <spdlog/spdlog.h>
+
 // SDL2 Headers
 #include <SDL2/SDL.h>
 
+
 static void CheckSDLError(int line = -1) {
-  std::string error = SDL_GetError();
+  using namespace std;
+  string error = SDL_GetError();
 
   if (error != "") {
-    std::cout << "SLD Error : " << error << std::endl;
+    spdlog::get("console")->error("SLD Error : " + error);
 
     if (line != -1)
-    	std::cout << "\nLine : " << line << std::endl;
+    spdlog::get("console")->error("SLD Error Line: " + line);
 
     SDL_ClearError();
   }
