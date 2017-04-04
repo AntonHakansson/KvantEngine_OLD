@@ -58,13 +58,13 @@ namespace Kvant {
       return false;
     }
 
-    // Create our opengl context and attach it to our window
-    mainContext = SDL_GL_CreateContext(mainWindow);
-
     setOpenGLAttributes();
 
     // This makes our buffer swap syncronized with the monitor's vertical refresh
     SDL_GL_SetSwapInterval(1);
+
+    // Create our opengl context and attach it to our window
+    mainContext = SDL_GL_CreateContext(mainWindow);
 
     // Init GLEW
     // Apparently, this is needed for Apple. Thanks to Ross Vander for letting me know
