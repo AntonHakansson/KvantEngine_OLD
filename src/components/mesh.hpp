@@ -6,7 +6,8 @@
 // OpenGL / glew Headers
 #define GL3_PROTOTYPES 1
 #include <GL/glew.h>
-#include <eigen3/Eigen/Dense>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <entitySystem.hpp>
 #include <types/Vertex.hpp>
@@ -14,7 +15,6 @@
 #include <components/Material.hpp>
 
 namespace Kvant {
-  using namespace Eigen;
   using namespace std;
   struct MeshData {
     /* Mesh Data */
@@ -39,12 +39,24 @@ namespace Kvant {
     void init() override {
       meshFilter = &entity->getComponent<CMeshFilter>();
       material = &entity->getComponent<CMaterial>();
-      setupMesh();
+      setupMesh(); 
     }
 
     void draw() override {
       // User current material
       material->use();
+      
+      //set the "projection" uniform in the vertex shader, because it's not going to change
+      glm::mat4 projection = glm::perspective(glm::radians(50.0f), 512.0f/512.0f, 0.1f, 10.0f);
+      material->shader.setUniform("projection", projection, GL_FALSE);
+
+      //set the "camera" uniform in the vertex shader, because it's also not going to change
+      glm::mat4 camera = glm::lookAt(glm::vec3(0,0,-3), glm::vec3(0,0,0), glm::vec3(0,1,0));
+      material->shader.setUniform("camera", camera, GL_FALSE);
+
+      glm::mat4 model = glm::mat4();
+      material->shader.setUniform("model", model);
+
       // Draw mesh
       glBindVertexArray(this->VAO);
       auto& meshData = this->meshFilter->meshData;
@@ -76,19 +88,17 @@ namespace Kvant {
         // Vertex Positions
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                         (GLvoid*)0);
+                         (GLvoid*)offsetof(Vertex, position.x));
         // Vertex Normals
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                         (GLvoid*)offsetof(Vertex, normal));
+                         (GLvoid*)offsetof(Vertex, normal.x));
         // Vertex Texture Coords
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                         (GLvoid*)offsetof(Vertex, texCoord));
+                         (GLvoid*)offsetof(Vertex, texCoord.x));
 
         glBindVertexArray(0);
       }
-
   };
-
 }

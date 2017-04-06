@@ -89,6 +89,11 @@ namespace Kvant {
     // You may need to change this to 16 or 32 for your system
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+    // Enable face culling, I.e. save fragment shader calls by not rendering backside of face
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
     return true;
   }
 

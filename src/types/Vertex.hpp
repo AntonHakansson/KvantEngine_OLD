@@ -1,13 +1,13 @@
 #pragma once
 
-#include <eigen3/Eigen/Dense>
+#include <glm/glm.hpp>
 
 namespace Kvant {
-  using namespace Eigen;
+  using namespace glm;
 
   struct Vertex {
-    Vector3d position;
-    Vector3d normal;
-    Vector2d texCoord;
+    vec3 position;
+    vec3 normal;
+    vec2 texCoord;
   };
 }

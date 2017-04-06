@@ -13,6 +13,5 @@ int main(int, char**) {
   console->info("Welcome to KvantEngine!");
 
   Game{}.run();
-
   return 0;
 }

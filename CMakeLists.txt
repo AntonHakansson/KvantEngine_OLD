@@ -5,8 +5,8 @@ set(PNAME KvantEngine)
 project(${PNAME})
 
 # Set compiler to gcc-4.9 version
-SET(CMAKE_C_COMPILER /usr/bin/gcc-4.9)
-SET(CMAKE_CXX_COMPILER /usr/bin/g++-4.9)
+SET(CMAKE_C_COMPILER /usr/bin/gcc)
+SET(CMAKE_CXX_COMPILER /usr/bin/g++)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
