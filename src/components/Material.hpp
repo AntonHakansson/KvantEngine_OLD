@@ -1,23 +1,23 @@
 #pragma once
 
+// C++ Headers
 #include <string>
 
 // OpenGL / glew Headers
 #define GL3_PROTOTYPES 1
 #include <GL/glew.h>
 
-#include <types/Shader.hpp>
+// Kvant Headers
+#include <types/Program.hpp>
 #include <entitySystem.hpp>
 
 namespace Kvant {
   using namespace std;
 
   struct CMaterial : Component {
-    Shader shader;
-    CMaterial(const Shader _shader) : shader{_shader} { }
-
-    void use() {
-      this->shader.use();
-    }
+    CMaterial(const Shader _shader) : m_program{_shader} { }
+    const Program& getProgram() const { return m_program; }
+  private:
+    Program m_program;
   };
 }

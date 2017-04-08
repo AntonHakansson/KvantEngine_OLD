@@ -12,6 +12,6 @@ int main(int, char**) {
   auto console = spd::stdout_color_mt("console");
   console->info("Welcome to KvantEngine!");
 
-  Game{}.run();
+  Kvant::Game{}.run();
   return 0;
 }

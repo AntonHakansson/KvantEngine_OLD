@@ -1,5 +1,6 @@
 #pragma once
 
+// OpenGL / glew Headers
 #include <glm/glm.hpp>
 
 namespace Kvant {
@@ -8,6 +9,6 @@ namespace Kvant {
   struct Vertex {
     vec3 position;
     vec3 normal;
-    vec2 texCoord;
+    vec2 tex_coord;
   };
 }

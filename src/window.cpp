@@ -16,21 +16,21 @@ namespace Kvant {
     w.title = j["title"].get<string>();
   }
 
-  void Window::loadConfig() {
+  void Window::load_config() {
     ifstream i{"../resources/config.json"};
     json j;
     i >> j;
-    config = j["window"].get<WindowConfig>();
+    m_config = j["window"].get<WindowConfig>();
 
     // Log read data
     namespace spd = spdlog;
-    spdlog::get("console")->info("Read window config. title: \"{}\", width: {}, height: {}",  config.title, config.width, config.height);
+    spdlog::get("console")->info("Read window config. title: \"{}\", width: {}, height: {}",  m_config.title, m_config.width, m_config.height);
   }
 
-  void Window::saveConfig() {
+  void Window::save_config() {
     ofstream o("../resources/config.json");
     json j;
-    j["window"] = config;
+    j["window"] = m_config;
     o << j;
   }
 
@@ -38,7 +38,7 @@ namespace Kvant {
   /********    Window    ********/
   /******************************/
   bool Window::init() {
-    loadConfig();
+    load_config();
 
     // Initialize SDL's Video subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -47,24 +47,24 @@ namespace Kvant {
     }
 
     // Create our window centered at 512x512 resolution
-    mainWindow = SDL_CreateWindow(config.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-      config.width, config.height, SDL_WINDOW_OPENGL);
+    m_main_window = SDL_CreateWindow(m_config.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+      m_config.width, m_config.height, SDL_WINDOW_OPENGL);
 
       // Check that everything worked out okay
-    if (!mainWindow) {
+    if (!m_main_window) {
       namespace spd = spdlog;
       spdlog::get("console")->error("Unable to create window");
-      CheckSDLError(__LINE__);
+      Kvant::error::check_sdl_error(__LINE__);
       return false;
     }
 
-    setOpenGLAttributes();
+    set_gl_attributes();
 
     // This makes our buffer swap syncronized with the monitor's vertical refresh
     SDL_GL_SetSwapInterval(1);
 
     // Create our opengl context and attach it to our window
-    mainContext = SDL_GL_CreateContext(mainWindow);
+    m_main_context = SDL_GL_CreateContext(m_main_window);
 
     // Init GLEW
     // Apparently, this is needed for Apple. Thanks to Ross Vander for letting me know
@@ -76,7 +76,7 @@ namespace Kvant {
     return true;
   }
 
-  bool Window::setOpenGLAttributes() {
+  bool Window::set_gl_attributes() {
     // Set our OpenGL version.
     // SDL_GL_CONTEXT_CORE gives us only the newer version, deprecated functions are disabled
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -99,10 +99,10 @@ namespace Kvant {
 
   void Window::cleanup() {
     // Delete our OpengL context
-    SDL_GL_DeleteContext(mainContext);
+    SDL_GL_DeleteContext(m_main_context);
 
     // Destroy our window
-    SDL_DestroyWindow(mainWindow);
+    SDL_DestroyWindow(m_main_window);
 
     // Shutdown SDL 2
     SDL_Quit();

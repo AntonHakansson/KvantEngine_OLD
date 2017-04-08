@@ -1,6 +1,6 @@
 #pragma once
 
-
+// C++ Headers
 #include <vector>
 
 // OpenGL / glew Headers
@@ -9,13 +9,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+// Kvant Headers
 #include <entitySystem.hpp>
 #include <types/Vertex.hpp>
 #include <types/Texture.hpp>
 #include <components/Material.hpp>
 
 namespace Kvant {
+  
   using namespace std;
+
   struct MeshData {
     /* Mesh Data */
     vector<Vertex> vertices;
@@ -24,66 +27,70 @@ namespace Kvant {
   };
 
   struct CMeshFilter : Component {
-    MeshData meshData;
 
-    CMeshFilter(const vector<Vertex>& _vertices, const vector<GLuint>& _indices, const vector<Texture>& _textures) : meshData{_vertices, _indices, _textures} {}
-    CMeshFilter(const MeshData& _meshData) : meshData(_meshData) {}
+    CMeshFilter(const vector<Vertex>& _vertices, const vector<GLuint>& _indices, const vector<Texture>& _textures) : m_mesh_data{_vertices, _indices, _textures} {}
+    CMeshFilter(const MeshData& _mesh_data) : m_mesh_data(_mesh_data) {}
+ 
+    const MeshData& get_mesh_data() { return m_mesh_data; }
+
+  private:
+    MeshData m_mesh_data;
   };
 
   struct CMeshRenderer : Component {
-    CMeshFilter* meshFilter{nullptr};
-    CMaterial* material{nullptr};
-
     CMeshRenderer() {}
 
     void init() override {
-      meshFilter = &entity->getComponent<CMeshFilter>();
-      material = &entity->getComponent<CMaterial>();
+      m_mesh_filter = &entity->get_component<CMeshFilter>();
+      m_material = &entity->get_component<CMaterial>();
       setupMesh(); 
     }
 
     void draw() override {
-      // User current material
-      material->use();
+      // User current m_material
+      m_material->getProgram().use();
       
       //set the "projection" uniform in the vertex shader, because it's not going to change
       glm::mat4 projection = glm::perspective(glm::radians(50.0f), 512.0f/512.0f, 0.1f, 10.0f);
-      material->shader.setUniform("projection", projection, GL_FALSE);
+      m_material->getProgram().set_uniform("projection", projection, GL_FALSE);
 
       //set the "camera" uniform in the vertex shader, because it's also not going to change
       glm::mat4 camera = glm::lookAt(glm::vec3(0,0,-3), glm::vec3(0,0,0), glm::vec3(0,1,0));
-      material->shader.setUniform("camera", camera, GL_FALSE);
+      m_material->getProgram().set_uniform("camera", camera, GL_FALSE);
 
       glm::mat4 model = glm::mat4();
-      material->shader.setUniform("model", model);
+      m_material->getProgram().set_uniform("model", model);
 
       // Draw mesh
-      glBindVertexArray(this->VAO);
-      auto& meshData = this->meshFilter->meshData;
-      glDrawElements(GL_TRIANGLES, meshData.indices.size(), GL_UNSIGNED_INT, 0);
+      glBindVertexArray(m_vao);
+      auto& mesh_data = m_mesh_filter->get_mesh_data();
+      glDrawElements(GL_TRIANGLES, mesh_data.indices.size(), GL_UNSIGNED_INT, 0);
       glBindVertexArray(0);
     }
 
     private:
+      CMeshFilter* m_mesh_filter{nullptr};
+      CMaterial* m_material{nullptr};
+
       /*  Render data  */
-      GLuint VAO, VBO, EBO;
+      GLuint m_vao, m_vbo, m_ebo;
       /*  Functions    */
       void setupMesh() {
-        glGenVertexArrays(1, &this->VAO);
-        glGenBuffers(1, &this->VBO);
-        glGenBuffers(1, &this->EBO);
+        glGenVertexArrays(1, &m_vao);
+        glGenBuffers(1, &m_vbo);
+        glGenBuffers(1, &m_ebo);
 
-        glBindVertexArray(this->VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+        glBindVertexArray(m_vao);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-        auto& meshData = this->meshFilter->meshData;
+        auto& mesh_data = m_mesh_filter->get_mesh_data();
 
-        glBufferData(GL_ARRAY_BUFFER, meshData.vertices.size() * sizeof(Vertex),
-                 &meshData.vertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mesh_data.vertices.size() * sizeof(Vertex),
+                 &mesh_data.vertices[0], GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshData.indices.size() * sizeof(GLuint),
-                 &meshData.indices[0], GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh_data.indices.size() * sizeof(GLuint),
+                 &mesh_data.indices[0], GL_STATIC_DRAW);
 
         // Vertex Positions
         glEnableVertexAttribArray(0);
@@ -96,7 +103,7 @@ namespace Kvant {
         // Vertex Texture Coords
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                         (GLvoid*)offsetof(Vertex, texCoord.x));
+                         (GLvoid*)offsetof(Vertex, tex_coord.x));
 
         glBindVertexArray(0);
       }

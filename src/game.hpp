@@ -1,5 +1,6 @@
 #pragma once
 
+// C++ Headers
 #include <iostream>
 #include <chrono>
 #include <functional>
@@ -13,6 +14,7 @@
 // SDL2 Headers
 #include <SDL2/SDL.h>
 
+// Kvant Headers
 #include <entitySystem.hpp>
 #include <window.hpp>
 
@@ -22,26 +24,25 @@
 #include <components/Material.hpp>
 #include <components/mesh.hpp>
 
+namespace Kvant {
+
 using namespace std;
 using namespace Kvant;
 
 using FrameTime = float;
 
-constexpr float ftStep{1.f}, ftSlice{1.f};
+constexpr float ft_step{1.f}, ft_slice{1.f};
 
+//!Game class
 struct Game {
-  Kvant::Window window;
-  Manager manager;
-  bool running;
-  FrameTime lastFt{0.f}, currentSlice{0.f};
 
   enum groups : std::size_t {
     meshRenderers
   };
 
-  Entity& createTriangle() {
-    auto& e(manager.addEntity());
-    e.addComponent<CMaterial>( Shader{"../src/shaders/default.vs", "../src/shaders/default.frag"} );
+  Entity& create_triangle() {
+    auto& e(m_manager.add_entity());
+    e.add_component<CMaterial>( Shader{"../src/shaders/default.vs", "../src/shaders/default.frag"} );
 
     using namespace glm;
 
@@ -57,59 +58,58 @@ struct Game {
 
     vector<Texture> textures;
 
-    e.addComponent<CMeshFilter>(vertices, indices, textures);
-    e.addComponent<CMeshRenderer>();
-    e.addGroup(groups::meshRenderers);
+    e.add_component<CMeshFilter>(vertices, indices, textures);
+    e.add_component<CMeshRenderer>();
+    e.add_group(groups::meshRenderers);
 
     return e;
   }
 
   Game() {
-    window.init();
-    createTriangle();
+    m_window.init();
+    create_triangle();
   }
 
   void run() {
-    while(running) {
-      auto timePoint1(chrono::high_resolution_clock::now());
+    while(m_running) {
+      auto time_point1(chrono::high_resolution_clock::now());
 
-      inputPhase();
-      updatePhase();
-      drawPhase();
+      input_phase();
+      update_phase();
+      draw_phase();
 
-      auto timePoint2(chrono::high_resolution_clock::now());
-      auto elapsedTime(timePoint2 - timePoint1);
+      auto time_point2(chrono::high_resolution_clock::now());
+      auto elapsed_time(time_point2 - time_point1);
       FrameTime ft{
           chrono::duration_cast<chrono::duration<float, milli>>(
-              elapsedTime)
+              elapsed_time)
               .count()};
 
-      lastFt = ft;
-
+      m_last_ft = ft;
       // auto ftSeconds(ft / 1000.f);
       // auto fps(1.f / ftSeconds);
     }
 
-    cleanupPhase();
+    cleanup_phase();
   }
 
-  void inputPhase() {
+  void input_phase() {
     SDL_Event event;
     while(SDL_PollEvent(&event)) {
       if(event.type == SDL_QUIT) {
-        running = false;
+        m_running = false;
         break;
       }
 
       if (event.type == SDL_KEYDOWN) {
 				switch (event.key.keysym.sym) {
           case SDLK_ESCAPE:
-  					running = false;
+  					m_running = false;
   					break;
           case SDLK_r:
             glClearColor(1.0, 0.0, 0.0, 1.0);
             glClear(GL_COLOR_BUFFER_BIT);
-            SDL_GL_SwapWindow(window.getWindow());
+            SDL_GL_SwapWindow(m_window.get_window());
             break;
           default:
             break;
@@ -120,27 +120,35 @@ struct Game {
   }
 
 
-  void updatePhase() {
-    currentSlice += lastFt;
-    for(; currentSlice >= ftSlice; currentSlice -= ftSlice) {
-      manager.refresh();
-      manager.update(ftStep);
+  void update_phase() {
+    m_current_slice += m_last_ft;
+    for(; m_current_slice >= ft_slice; m_current_slice -= ft_slice) {
+      m_manager.refresh();
+      m_manager.update(ft_step);
     }
   }
 
-  void drawPhase() {
+  void draw_phase() {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    auto& meshRenderers(manager.getEntitiesByGroup(groups::meshRenderers));
+    auto& meshRenderers(m_manager.get_entities_by_group(groups::meshRenderers));
     for(auto& mesh : meshRenderers) {
-      mesh->getComponent<CMeshRenderer>().draw();
+      mesh->get_component<CMeshRenderer>().draw();
     }
     
-    SDL_GL_SwapWindow(window.getWindow());
+    SDL_GL_SwapWindow(m_window.get_window());
   }
 
-  void cleanupPhase() {
-    window.cleanup();
+  void cleanup_phase() {
+    m_window.cleanup();
   }
+
+private:
+  Window m_window;
+  Manager m_manager;
+  bool m_running;
+  FrameTime m_last_ft{0.f}, m_current_slice{0.f};
 };
+
+}
