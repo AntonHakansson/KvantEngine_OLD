@@ -15,14 +15,15 @@
 #include <SDL2/SDL.h>
 
 // Kvant Headers
-#include <entitySystem.hpp>
-#include <window.hpp>
+#include <Core/entitySystem.hpp>
+#include <Core/window.hpp>
 
-#include <types/Vertex.hpp>
-#include <types/Texture.hpp>
-#include <types/Shader.hpp>
-#include <components/Material.hpp>
-#include <components/mesh.hpp>
+#include <Core/StateManager.hpp>
+#include <CoreTypes/Vertex.hpp>
+#include <CoreTypes/Texture.hpp>
+#include <CoreTypes/Shader.hpp>
+#include <CoreComponents/Material.hpp>
+#include <CoreComponents/mesh.hpp>
 
 namespace Kvant {
 
@@ -42,7 +43,7 @@ struct Game {
 
   Entity& create_triangle() {
     auto& e(m_manager.add_entity());
-    e.add_component<CMaterial>( Shader{"../src/shaders/default.vs", "../src/shaders/default.frag"} );
+    e.add_component<CMaterial>( Shader{"../src/CoreShaders/default.vs", "../src/CoreShaders/default.frag"} );
 
     using namespace glm;
 
@@ -74,7 +75,7 @@ struct Game {
     while(m_running) {
       auto time_point1(chrono::high_resolution_clock::now());
 
-      input_phase();
+      events_phase();
       update_phase();
       draw_phase();
 
@@ -93,7 +94,7 @@ struct Game {
     cleanup_phase();
   }
 
-  void input_phase() {
+  void events_phase() {
     SDL_Event event;
     while(SDL_PollEvent(&event)) {
       if(event.type == SDL_QUIT) {
@@ -102,20 +103,16 @@ struct Game {
       }
 
       if (event.type == SDL_KEYDOWN) {
-				switch (event.key.keysym.sym) {
+	switch (event.key.keysym.sym) {
           case SDLK_ESCAPE:
-  					m_running = false;
-  					break;
-          case SDLK_r:
-            glClearColor(1.0, 0.0, 0.0, 1.0);
-            glClear(GL_COLOR_BUFFER_BIT);
-            SDL_GL_SwapWindow(m_window.get_window());
-            break;
+            m_running = false;
+  	    break;
           default:
             break;
         }
       }
 
+      m_state_manager.handle_events(this, event);
     }
   }
 
@@ -123,8 +120,9 @@ struct Game {
   void update_phase() {
     m_current_slice += m_last_ft;
     for(; m_current_slice >= ft_slice; m_current_slice -= ft_slice) {
-      m_manager.refresh();
-      m_manager.update(ft_step);
+      // m_manager.refresh();
+      // m_manager.update(ft_step);
+      m_state_manager.update(this, ft_step);
     }
   }
 
@@ -132,20 +130,25 @@ struct Game {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+     
     auto& meshRenderers(m_manager.get_entities_by_group(groups::meshRenderers));
     for(auto& mesh : meshRenderers) {
       mesh->get_component<CMeshRenderer>().draw();
     }
     
+    //m_state_manager.draw(this);
+    
     SDL_GL_SwapWindow(m_window.get_window());
   }
 
   void cleanup_phase() {
+    m_state_manager.cleanup();
     m_window.cleanup();
   }
 
 private:
   Window m_window;
+  StateManager m_state_manager;
   Manager m_manager;
   bool m_running;
   FrameTime m_last_ft{0.f}, m_current_slice{0.f};

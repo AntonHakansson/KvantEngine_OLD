@@ -10,10 +10,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 // Kvant Headers
-#include <entitySystem.hpp>
-#include <types/Vertex.hpp>
-#include <types/Texture.hpp>
-#include <components/Material.hpp>
+#include <Core/entitySystem.hpp>
+#include <CoreTypes/Vertex.hpp>
+#include <CoreTypes/Texture.hpp>
+#include <CoreComponents/Material.hpp>
 
 namespace Kvant {
   

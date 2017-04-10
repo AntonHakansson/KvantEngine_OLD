@@ -1,12 +1,8 @@
 # Specify the version being used aswell as the language
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 # Name your project here
 set(PNAME KvantEngine)
 project(${PNAME})
-
-# Set compiler to gcc-4.9 version
-SET(CMAKE_C_COMPILER /usr/bin/gcc)
-SET(CMAKE_CXX_COMPILER /usr/bin/g++)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
@@ -14,20 +10,23 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic-errors")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic-errors")
 
+include_directories(include)
 include_directories(src)
 include_directories(third-party)
 
 add_executable(${PROJECT_NAME}
-  src/window.cpp
+  src/util/error.cpp 
+  src/Core/window.cpp
   src/main.cpp
 )
 
 INCLUDE(FindPkgConfig)
 
+# Link to SDL2 libraries
 PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
 
@@ -62,6 +61,3 @@ find_package(Boost REQUIRED COMPONENTS system)
 target_link_libraries(${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY})
 add_definitions(-DBOOST_LOG_DYN_LINK)
 
-# Eigen
-#find_package (Eigen3 3.3 REQUIRED NO_MODULE)
-#target_link_libraries (${PROJECT_NAME} Eigen3::Eigen)

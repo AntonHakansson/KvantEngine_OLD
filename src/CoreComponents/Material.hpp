@@ -8,8 +8,8 @@
 #include <GL/glew.h>
 
 // Kvant Headers
-#include <types/Program.hpp>
-#include <entitySystem.hpp>
+#include <CoreTypes/Program.hpp>
+#include <Core/entitySystem.hpp>
 
 namespace Kvant {
   using namespace std;

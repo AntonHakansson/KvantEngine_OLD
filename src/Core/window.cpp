@@ -1,4 +1,4 @@
-#include "window.hpp"
+#include <Core/window.hpp>
 
 namespace Kvant {
   using namespace std;
@@ -39,7 +39,7 @@ namespace Kvant {
   /******************************/
   bool Window::init() {
     load_config();
-
+    
     // Initialize SDL's Video subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
       spdlog::get("console")->error("Failed to init SDL");

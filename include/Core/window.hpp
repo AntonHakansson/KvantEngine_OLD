@@ -1,8 +1,5 @@
 #pragma once
 
-#ifndef WINDOW_H
-#define WINDOW_H
-
 // C++ Headers
 #include <string>       // std::string
 #include <fstream>      // std::ifstream
@@ -51,4 +48,3 @@ namespace Kvant {
   };
 }
 
-#endif

@@ -9,7 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Kvant Headers
-#include <types/Shader.hpp>
+#include <CoreTypes/Shader.hpp>
 
 namespace Kvant {
 
@@ -228,4 +228,4 @@ ATTRIB_N_UNIFORM_SETTERS(GLuint, I, ui);
     private:
       GLuint m_program_id;
   };
-};
+}

@@ -31,4 +31,4 @@
 # build directory
 /build/*
 # docs directory
-/docs/*
+/doc/*
