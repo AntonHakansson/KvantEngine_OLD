@@ -4,7 +4,7 @@
 #include <spdlog/spdlog.h>
 
 // Kvant
-#include <Core/game.hpp>
+#include <Core/Game.hpp>
 
 namespace spd = spdlog;
 int main(int, char**) {

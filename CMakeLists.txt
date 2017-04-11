@@ -19,8 +19,8 @@ include_directories(src)
 include_directories(third-party)
 
 add_executable(${PROJECT_NAME}
-  src/util/error.cpp 
-  src/Core/window.cpp
+  src/util/Error.cpp 
+  src/Core/Window.cpp
   src/main.cpp
 )
 

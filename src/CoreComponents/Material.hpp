@@ -9,7 +9,7 @@
 
 // Kvant Headers
 #include <CoreTypes/Program.hpp>
-#include <Core/entitySystem.hpp>
+#include <Core/EntitySystem.hpp>
 
 namespace Kvant {
   using namespace std;

@@ -8,7 +8,7 @@
 
 // Kvant Headers
 #include <CoreTypes/GameState.hpp>
-#include <Core/game.hpp>
+#include <Core/Game.hpp>
 
 namespace Kvant {
   

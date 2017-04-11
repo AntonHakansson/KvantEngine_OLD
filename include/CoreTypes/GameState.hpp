@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 
 // Kvant Headers
-#include <Core/game.hpp>
+#include <Core/Game.hpp>
 
 namespace Kvant {
 
