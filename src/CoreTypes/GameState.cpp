@@ -1,8 +1,8 @@
-#include <types/GameState.hpp>
+#include <CoreTypes/GameState.hpp>
 
 namespace Kvant {
-  void GameState::change_state(Game* game, GameState* state) {
-    game->change_state(state); 
+  void GameState::change_state(GameState* state) {
+    if(m_state_manager == nullptr) return;
+    m_state_manager->change_state(state);
   }
 }
-

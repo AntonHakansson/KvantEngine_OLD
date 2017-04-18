@@ -5,7 +5,7 @@ set(PNAME KvantEngine)
 project(${PNAME})
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
@@ -19,8 +19,15 @@ include_directories(src)
 include_directories(third-party)
 
 add_executable(${PROJECT_NAME}
-  src/util/Error.cpp 
+  src/Core/Engine.cpp
   src/Core/Window.cpp
+  src/Core/StateManager.cpp
+  src/CoreComponents/CNode.cpp
+  src/CoreComponents/CMeshRenderer.cpp
+  src/CoreSystems/NodeSystem.cpp
+  src/CoreSystems/RenderSystem.cpp
+  src/States/State.cpp
+  src/util/Error.cpp
   src/main.cpp
 )
 
@@ -61,3 +68,6 @@ find_package(Boost REQUIRED COMPONENTS system)
 target_link_libraries(${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY})
 add_definitions(-DBOOST_LOG_DYN_LINK)
 
+# Link to entityx
+link_directories(/usr/lib)
+target_link_libraries(${PROJECT_NAME} entityx)

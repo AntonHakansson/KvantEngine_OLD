@@ -10,13 +10,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 // Kvant Headers
+#include <Core/Game.hpp>
 #include <Core/EntitySystem.hpp>
 #include <CoreTypes/Vertex.hpp>
 #include <CoreTypes/Texture.hpp>
 #include <CoreComponents/Material.hpp>
 
 namespace Kvant {
-  
+
   using namespace std;
 
   struct MeshData {
@@ -30,7 +31,7 @@ namespace Kvant {
 
     CMeshFilter(const vector<Vertex>& _vertices, const vector<GLuint>& _indices, const vector<Texture>& _textures) : m_mesh_data{_vertices, _indices, _textures} {}
     CMeshFilter(const MeshData& _mesh_data) : m_mesh_data(_mesh_data) {}
- 
+
     const MeshData& get_mesh_data() { return m_mesh_data; }
 
   private:
@@ -43,18 +44,20 @@ namespace Kvant {
     void init() override {
       m_mesh_filter = &entity->get_component<CMeshFilter>();
       m_material = &entity->get_component<CMaterial>();
-      setupMesh(); 
+      //entity->add_group(Kvant::groups::mesh_renderers);
+      Kvant::game_layers;
+      setupMesh();
     }
 
     void draw() override {
-      // User current m_material
+      // Use current m_material
       m_material->getProgram().use();
-      
-      //set the "projection" uniform in the vertex shader, because it's not going to change
+
+      // set the "projection" uniform in the vertex shader, because it's not going to change
       glm::mat4 projection = glm::perspective(glm::radians(50.0f), 512.0f/512.0f, 0.1f, 10.0f);
       m_material->getProgram().set_uniform("projection", projection, GL_FALSE);
 
-      //set the "camera" uniform in the vertex shader, because it's also not going to change
+      // set the "camera" uniform in the vertex shader, because it's also not going to change
       glm::mat4 camera = glm::lookAt(glm::vec3(0,0,-3), glm::vec3(0,0,0), glm::vec3(0,1,0));
       m_material->getProgram().set_uniform("camera", camera, GL_FALSE);
 

@@ -23,6 +23,9 @@ namespace Kvant {
   // for convenience
   using json = nlohmann::json;
   using namespace std;
+  using namespace Kvant;
+
+  class Engine;
 
   struct WindowConfig {
     unsigned int width, height;
@@ -30,21 +33,23 @@ namespace Kvant {
   };
 
   struct Window {
-    bool init();
-    bool set_gl_attributes();
-    void cleanup();
+    Window(Kvant::Engine* engine) : m_engine(engine) {}
 
-    void load_config();
-    void save_config();
+    bool init ();
+    bool set_gl_attributes ();
+    void cleanup ();
 
-    SDL_Window* get_window() const { return m_main_window; };
-    const SDL_GLContext& get_context() const { return m_main_context; };
-    const WindowConfig& get_config() const { return m_config; };
+    void load_config ();
+    void save_config ();
+
+    SDL_Window* get_window () const { return m_main_window; };
+    const SDL_GLContext& get_context () const { return m_main_context; };
+    const WindowConfig& get_config () const { return m_config; };
 
     private:
       SDL_Window *m_main_window;
       SDL_GLContext m_main_context;
       WindowConfig m_config;
+      Engine* m_engine;
   };
 }
-

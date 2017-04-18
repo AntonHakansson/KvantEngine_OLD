@@ -1,17 +1,16 @@
 // c++ standard libraries
-
-// Third party
-#include <spdlog/spdlog.h>
+#include <memory>
 
 // Kvant
-#include <Core/Game.hpp>
+#include <Core/Engine.hpp>
+#include <src/States/IntroState.hpp>
 
 namespace spd = spdlog;
 int main(int, char**) {
-  // Console logger with color
-  auto console = spd::stdout_color_mt("console");
-  console->info("Welcome to KvantEngine!");
 
-  Kvant::Game{}.run();
+  auto engine = std::make_unique<Kvant::Engine>();
+  engine->get_state_manager().push_state<IntroState>();
+  engine->run();
+
   return 0;
 }

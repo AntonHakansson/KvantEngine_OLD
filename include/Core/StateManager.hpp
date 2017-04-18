@@ -2,29 +2,28 @@
 
 // C++ Headers
 #include <vector>
+#include <memory>
 
 // SDL2 Headers
 #include <SDL2/SDL.h>
 
 // Kvant Headers
-#include <CoreTypes/GameState.hpp>
-#include <Core/Game.hpp>
+#include <States/State.hpp>
 
 namespace Kvant {
-  
+
   using namespace std;
-  
+
+  class State;
+  class Engine;
   struct StateManager {
 
-    void cleanup() {
-      // Cleanup all states
-      while (!m_states.empty()) {
-        m_states.back()->cleanup();
-        m_states.pop_back();
-      }
-    }
+    StateManager(Kvant::Engine* engine) : m_engine(engine) {}
 
-    void change_state(GameState* state) {
+    void cleanup ();
+
+    template <typename T, typename... TArgs>
+    void change_state (TArgs&&... _args) {
       // cleanup current state
       if (!m_states.empty()) {
         m_states.back()->cleanup();
@@ -32,49 +31,35 @@ namespace Kvant {
       }
 
       // Store and init new state
-      m_states.push_back(state);
-      m_states.back()->init();
+      m_states.emplace_back ( make_unique<T>(forward<TArgs>(_args)...) );
+      m_states.back()->init(m_engine);
     }
 
-    void push_state(GameState* state) {
+    template <typename T, typename... TArgs>
+    void push_state (TArgs&&... _args) {
       // Pause current state
       if (!m_states.empty()) {
         m_states.back()->pause();
       }
 
       // Store and init new state
-      m_states.push_back(state);
-      m_states.back()->init();
+      m_states.emplace_back ( make_unique<T>(forward<TArgs>(_args)...) );
+      m_states.back()->init(m_engine);
     }
 
-    void pop_state() {
-      // Cleaup current state
-      if (!m_states.empty()) {
-        m_states.back()->cleanup();
-        m_states.pop_back();
-      }
+    void pop_state ();
 
-      // Resume previous state
-      if (!m_states.empty()) {
-        m_states.back()->resume();
-      }
-    }
+    Kvant::State* peek_state () const { return m_states.back().get(); }
 
-    void handle_events(Kvant::Game* game, SDL_Event& event) {
-      if (m_states.empty()) return;
-      m_states.back()->handle_events(game, event);
-    }
-    void update(Kvant::Game* game, float ft) {
-      if (m_states.empty()) return;
-      m_states.back()->update(game, ft);
-    }
-    void draw(Kvant::Game* game) {
-      if (m_states.empty()) return;
-      m_states.back()->draw(game);
-    }
+    void handle_events (SDL_Event& event);
+    void update (const float dt);
+    void draw (const float dt);
 
     private:
       // Stores stack of states
-      vector<GameState*> m_states;
+      vector<unique_ptr<Kvant::State>> m_states;
+
+      // Local reference to game instance
+      Kvant::Engine* m_engine;
   };
 }

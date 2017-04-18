@@ -4,24 +4,30 @@
 #include <SDL2/SDL.h>
 
 // Kvant Headers
-#include <Core/Game.hpp>
+#include <Core/Engine.hpp>
 
 namespace Kvant {
 
-  struct Game;
+  // Forward declaration
+  struct StateManager;
 
   struct GameState {
-    
+
+    virtual ~GameState() {};
     virtual void init() = 0;
     virtual void cleanup() = 0;
 
     virtual void pause() = 0;
     virtual void resume() = 0;
 
-    virtual void handle_events(Kvant::Game* game, SDL_Event& event) = 0;
-    virtual void update(Kvant::Game* game, float ft) = 0;
-    virtual void draw(Kvant::Game* game) = 0;
+    virtual void handle_events(const float dt) = 0;
+    virtual void update(const float dt) = 0;
+    virtual void draw(const float dt) = 0;
 
-    protected: GameState() {};
+    void change_state(GameState* state);
+  protected:
+    StateManager* m_state_manager;
+
+    friend struct StateManager;
   };
 }
