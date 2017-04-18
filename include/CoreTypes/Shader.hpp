@@ -16,7 +16,7 @@
 namespace Kvant {
 
   struct Shader {
-    
+
     Shader(const char* vertex_path, const char* fragment_path) {
       compile_shader(vertex_path, fragment_path);
     }
@@ -48,8 +48,7 @@ namespace Kvant {
         fragment_code = f_shader_stream.str();
       }
       catch(std::ifstream::failure e) {
-        namespace spd = spdlog;
-        spdlog::get("console")->error("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ  shaders: {}, {}", vertex_path, fragment_path);
+        spdlog::get("log")->error("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ  shaders: {}, {}", vertex_path, fragment_path);
       }
 
       const GLchar* v_shader_code = vertex_code.c_str();
@@ -67,7 +66,7 @@ namespace Kvant {
       glGetShaderiv(m_vertex_id, GL_COMPILE_STATUS, &success);
       if(!success) {
         glGetShaderInfoLog(m_vertex_id, 512, NULL, info_log);
-        spdlog::get("console")->error("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n {}", info_log);
+        spdlog::get("log")->error("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n {}", info_log);
       };
 
       // Fragment Shader
@@ -78,12 +77,12 @@ namespace Kvant {
       glGetShaderiv(m_fragment_id, GL_COMPILE_STATUS, &success);
       if(!success) {
         glGetShaderInfoLog(m_fragment_id, 512, NULL, info_log);
-        spdlog::get("console")->error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n {}", info_log);
+        spdlog::get("log")->error("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n {}", info_log);
       };
     }
 
     ~Shader() {
-      // Free memory from (supposedly) linked shader 
+      // Free memory from (supposedly) linked shader
       glDeleteShader(m_vertex_id);
       glDeleteShader(m_fragment_id);
     }
@@ -94,6 +93,6 @@ namespace Kvant {
   private:
     // Identifiers
     GLuint m_vertex_id, m_fragment_id;
-    
+
   };
 }

@@ -3,7 +3,7 @@
 
 // Kvant
 #include <Core/Engine.hpp>
-#include <src/States/IntroState.hpp>
+#include <States/IntroState.hpp>
 
 namespace spd = spdlog;
 int main(int, char**) {

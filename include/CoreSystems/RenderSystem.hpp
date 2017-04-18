@@ -1,5 +1,8 @@
 #pragma once
 
+// C++ Headers
+#include <chrono>
+
 // SDL2 Headers
 #include <SDL2/SDL.h>
 
@@ -22,6 +25,8 @@ namespace Kvant {
   private:
     void render_entity (ex::Entity entity);
     ex::Entity m_render_root, m_camera;
+
+    std::chrono::high_resolution_clock::time_point m_time_start;
   };
 
 }

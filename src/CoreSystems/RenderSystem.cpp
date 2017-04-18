@@ -7,7 +7,7 @@
 namespace Kvant {
 
   RenderSystem::RenderSystem () {
-
+    m_time_start = std::chrono::high_resolution_clock::now();
   }
   RenderSystem::~RenderSystem () {
 
@@ -48,19 +48,30 @@ namespace Kvant {
 
     // use entity material
     if (material) {
+      // Activate Shader
       material->getProgram().use();
 
-      // set the "projection" uniform in the vertex shader, because it's not going to change
+      // Set projection matrix
       material->getProgram().set_uniform("projection", camera->get_projection_transform(), GL_FALSE);
 
       // set the "camera" uniform in the vertex shader, because it's also not going to change
       material->getProgram().set_uniform("camera", camera->get_camera_transform(), GL_FALSE);
 
+      // Set model matrix
       material->getProgram().set_uniform("model", node->get_world_transform());
+
+      using namespace std;
+      float time_seconds = chrono::duration_cast<chrono::duration<float, milli>>( chrono::high_resolution_clock::now() - m_time_start ).count()/1000.;
+      material->getProgram().set_uniform("time", time_seconds);
     }
 
     // Draw Entity
     if (mesh_renderer) {
+      // bind textures
+      for (auto i{0u}; i < mesh_renderer->m_textures.size(); i++) {
+        mesh_renderer->m_textures[i].bind(i);
+      }
+
       // Draw mesh
       glBindVertexArray(mesh_renderer->m_vao);
       auto indices = mesh_renderer->get_indices();

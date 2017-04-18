@@ -29,6 +29,7 @@ namespace Kvant {
     void quit ();
 
     StateManager& get_state_manager () { return m_state_manager; }
+    Window& get_window () { return m_window; }
     Logger& get_logger () { return m_log; }
 
   private:

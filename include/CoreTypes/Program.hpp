@@ -14,9 +14,9 @@
 namespace Kvant {
 
   struct Program {
-    
-    /*! Generates program ID 
-     *   
+
+    /*! Generates program ID
+     *
      *  Generates a program ID, shaders needs to be attached and linked seperatly
      */
     Program() {
@@ -26,14 +26,14 @@ namespace Kvant {
     //! Compiles, attaches and links shaders and generates a program ID
     Program(const char* vertex_path, const char* fragment_path) {
       m_program_id = glCreateProgram();
-      
-      Shader shader = Shader(vertex_path, fragment_path);      
+
+      Shader shader = Shader(vertex_path, fragment_path);
       attach_shaders(shader);
       link_program();
     }
 
     Program(const Shader& shader) {
-      
+
       m_program_id = glCreateProgram();
 
       attach_shaders(shader);
@@ -43,10 +43,10 @@ namespace Kvant {
     ~Program() {
       delete_program();
     }
-    
+
 
     /*! Attaches the given shaders
-     *  
+     *
      *  Calls glAttachShader for every shader Id in array
      *
      *  @param [in] shaders   Array of Shader Ids
@@ -60,7 +60,7 @@ namespace Kvant {
     }
 
     /*! Attaches the given shaders
-     *  
+     *
      *  Calls glAttachShader for every shader Id in array
      *
      *  @param [in] shaders   Array of Shader Ids
@@ -75,18 +75,18 @@ namespace Kvant {
     //! Links program, assumes shaders have been attached
     void link_program() const {
       glLinkProgram(m_program_id);
-      
+
       // Print linkage errors if any
       GLint success;
       GLchar info_log[512];
       glGetProgramiv(m_program_id, GL_LINK_STATUS, &success);
-      
+
       if(!success) {
         glGetProgramInfoLog(m_program_id, 512, NULL, info_log);
-        spdlog::get("console")->error("ERROR::SHADER::PROGRAM::LINKING_FAILED\n {}", info_log);
+        spdlog::get("log")->error("ERROR::SHADER::PROGRAM::LINKING_FAILED\n {}", info_log);
       };
     }
-    
+
     void delete_program() const {
       glDeleteProgram(m_program_id);
     }
@@ -96,7 +96,7 @@ namespace Kvant {
     void use() const {
       glUseProgram(m_program_id);
     }
-    
+
     /*! Checks if program is active
      *
      * @retval TRUE   Program is in use.
@@ -107,7 +107,7 @@ namespace Kvant {
       glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
       return (current_program == (GLint)m_program_id);
     }
-    
+
     //! Removes program as active
     void stop_using() const {
       assert( is_in_use() );
@@ -199,29 +199,29 @@ ATTRIB_N_UNIFORM_SETTERS(GLuint, I, ui);
 
 
     // Getters
-    
+
     //! Returns Opengl generated program ID
     GLuint get_program_id() const { return m_program_id; }
 
     GLint get_attrib(const GLchar* attrib_name) const {
       if(!attrib_name)
-        spdlog::get("console")->error("ERROR::SHADER::ATTRIB_NAME_IS_NULL");
-      
+        spdlog::get("log")->error("ERROR::SHADER::ATTRIB_NAME_IS_NULL");
+
       GLint attrib = glGetAttribLocation(m_program_id, attrib_name);
       if(attrib == -1)
-        spdlog::get("console")->error("ERROR::SHADER::ATTRIB_NOT_FOUND");
+        spdlog::get("log")->error("ERROR::SHADER::ATTRIB_NOT_FOUND");
 
       return attrib;
     }
 
     GLint get_uniform(const GLchar* uniform_name) const {
-      if(!uniform_name) 
-        spdlog::get("console")->error("ERROR::SHADER::UNIFORM_NAME_IS_NULL");
-      
+      if(!uniform_name)
+        spdlog::get("log")->error("ERROR::SHADER::UNIFORM_NAME_IS_NULL");
+
       GLint uniform = glGetUniformLocation(m_program_id, uniform_name);
       if(uniform == -1)
-        spdlog::get("console")->error("ERROR::SHADER::UNIFORM_NOT_FOUND {}", uniform_name);
-    
+        spdlog::get("log")->error("ERROR::SHADER::UNIFORM_NOT_FOUND {}", uniform_name);
+
       return uniform;
     }
 

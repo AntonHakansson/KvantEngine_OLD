@@ -76,7 +76,7 @@ struct Game {
   }
 
   void run() {
-    spdlog::get("console")->info("Entering main game loop");
+    spdlog::get("log")->info("Entering main game loop");
     while(m_running) {
       auto time_point1(chrono::high_resolution_clock::now());
 

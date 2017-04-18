@@ -32,6 +32,11 @@ namespace Kvant {
     const vector<GLuint>& get_indices () { return m_indices; }
     const vector<Texture>& get_textures () { return m_textures; }
 
+    void add_texture(string file) {
+      m_textures.emplace_back( );
+      m_textures[ m_textures.size()-1 ].load_image(file);
+    }
+
   private:
     /*  Render data  */
     GLuint m_vao, m_vbo, m_ebo;

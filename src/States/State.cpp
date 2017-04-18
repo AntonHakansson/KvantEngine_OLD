@@ -32,7 +32,8 @@ namespace Kvant {
     m_GUI_camera.assign<CCamera>();
 
     m_game_camera = get_entity_manager().create();
-    m_game_camera.assign<CCamera>(glm::vec3(0.f, 0.f, 1.f), glm::radians(60.0f), 512.0f/512.0f, 0.1f, 10.0f);
+    auto& config = m_engine->get_window().get_config();
+    m_game_camera.assign<CCamera>(glm::vec3(0.f, 0.f, 1.f), glm::radians(60.0f), config.width / config.height, 0.1f, 10.0f);
 
     on_init();
   }
