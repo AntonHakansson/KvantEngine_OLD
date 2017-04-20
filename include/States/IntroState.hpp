@@ -54,12 +54,14 @@ struct IntroState : public Kvant::State {
   void on_init() override {
     spdlog::get("log")->info("Inside CIntroState");
 
-    auto e = create_triangle(0, 0, 1.0, "../resources/textures/brick.bmp");
-    auto e2 = create_triangle(0.1, 0.1, 0.0, "../resources/textures/brick.bmp");
+    auto e = create_triangle(0, 0, 1.0, "../resources/textures/C.png");
+    auto e2 = create_triangle(0.5, 0.5, 0.0, "../resources/textures/brick.png");
+    e2.component<CNode>()->set_rotation(-10.0f);
     // e.component<CNode>()->set_rotation(45.f);
-    e.component<CNode>()->add_child(e2);
+    // e.component<CNode>()->add_child(e2);
 
-    add_to_layer (State::GameLayer::FOREGROUND, e);
+    add_to_layer (State::GameLayer::UI, e);
+    add_to_layer(State::GameLayer::FOREGROUND, e2);
   }
 
   void on_cleanup() override {

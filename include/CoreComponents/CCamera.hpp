@@ -31,12 +31,19 @@ namespace Kvant {
     }
     ~CCamera () {}
 
-    inline glm::mat4 get_projection_transform () const {
+    glm::mat4 get_projection_transform () const {
 		  return m_projection;
     }
 
-    inline glm::mat4 get_camera_transform () const {
+    glm::mat4 get_camera_transform () const {
 		  return glm::lookAt (m_pos, m_pos + m_forward, m_up);
+    }
+
+    void set_pos (const glm::vec3& pos) {
+      m_pos = pos;
+    }
+    void set_pos (float x, float y, float z = 1) {
+      m_pos = glm::vec3(x, y, z);
     }
 
   private:

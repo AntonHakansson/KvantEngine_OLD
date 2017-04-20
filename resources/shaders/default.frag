@@ -13,6 +13,8 @@ float rand(vec2 co) {
 }
 
 void main() {
-  vec3 diffuse = texture (sampler, tex_coord0).rgb;
-  color = vec4(diffuse, 0.1);
+  vec4 diffuse = texture (sampler, tex_coord0);
+  if (diffuse.a == 0) discard;
+
+  color = diffuse * (cos(time)*cos(time)+sin(time)*sin(time));
 }

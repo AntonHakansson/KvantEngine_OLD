@@ -42,7 +42,14 @@ namespace Kvant {
 
     // Initialize SDL's Video subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-      spdlog::get("log")->error("Failed to init SDL");
+      spdlog::get("log")->error("Failed to init SDL:\n{}", SDL_GetError());
+      return false;
+    }
+
+    // Initialize SDL_Image
+    auto img_flags = IMG_INIT_PNG | IMG_INIT_PNG | IMG_INIT_TIF;
+    if (! (IMG_Init(img_flags) & img_flags)) {
+      spdlog::get("log")->error("Failed to init SDL_Image:\n{}", IMG_GetError());
       return false;
     }
 
@@ -94,6 +101,7 @@ namespace Kvant {
     glCullFace (GL_BACK);
     glFrontFace (GL_CCW);
 
+    // Enable blending
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -106,6 +114,9 @@ namespace Kvant {
 
     // Destroy our window
     SDL_DestroyWindow(m_main_window);
+
+    // Quit SDL_Image
+    IMG_Quit();
 
     // Shutdown SDL 2
     SDL_Quit();

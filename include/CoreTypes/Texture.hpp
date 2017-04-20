@@ -9,7 +9,7 @@
 
 // SDL2 Headers
 #include <SDL2/SDL.h>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 
 // Third party
 #include <spdlog/spdlog.h>
@@ -20,20 +20,48 @@ namespace Kvant {
   struct Texture {
 
     void load_image (string file) {
-      SDL_Surface *tex = SDL_LoadBMP(file.c_str());
+      SDL_Surface *tex = IMG_Load(file.c_str());
       if(!tex) {
-        spdlog::get("log")->error("Failed to load texture {}", file);
+        spdlog::get("log")->error("Failed to load texture {} with error:\n {}", file, IMG_GetError());
         return;
+      }
+
+      if ( (tex->w & (tex->w-1)) != 0 ) {
+        spdlog::get("log")->warn("Warning: {}'s width is not a power of 2", file);
+      }
+      if ( (tex->h & (tex->h-1)) != 0 ) {
+        spdlog::get("log")->warn("Warning: {}'s height is not a power of 2", file);
+      }
+
+      auto number_of_colors = tex->format->BytesPerPixel;
+      GLenum texture_format;
+      switch (number_of_colors) {
+        case 4:
+          if (tex->format->Rmask == 0x000000ff)
+            texture_format = GL_RGBA;
+          else
+            texture_format = GL_BGRA;
+          break;
+        case 3:
+          if (tex->format->Rmask == 0x000000ff)
+            texture_format = GL_RGB;
+          else
+            texture_format = GL_BGR;
+          break;
+        default:
+          spdlog::get("log")->warn("Warning: {} is not truecolor.. could lead to undefined behavior", file);
+          texture_format = GL_RGB;
+          break;
       }
 
       glGenTextures(1, &m_id);
       glBindTexture(GL_TEXTURE_2D, m_id);
 
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tex->w, tex->h,
-                    0, GL_BGR, GL_UNSIGNED_BYTE, tex->pixels);
-
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+      glTexImage2D(GL_TEXTURE_2D, 0, texture_format, tex->w, tex->h,
+                    0, texture_format, GL_UNSIGNED_BYTE, tex->pixels);
 
       SDL_FreeSurface(tex);
     }

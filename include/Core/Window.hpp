@@ -11,6 +11,7 @@
 
 // SDL2 Headers
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 // third-party Headers
 #include <json/json.hpp>
