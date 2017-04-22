@@ -1,0 +1,16 @@
+window:
+  _comment: "Window configuration"
+  title: "KvantEngine"
+  width: 800
+  height: 600
+  fullscreen: false
+resources:
+  textures: "../resources/textures/"
+  shaders: "../resources/shaders/"
+input:
+  _commnent:
+  "
+    Input configuration \n
+    see https://wiki.libsdl.org/SDL_Scancode for valid keys
+  "
+  primary: "Left Ctrl"

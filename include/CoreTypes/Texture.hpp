@@ -3,6 +3,8 @@
 // C++ Headers
 #include <string>
 
+#include <boost/filesystem.hpp>
+
 // OpenGL / glew Headers
 #define GL3_PROTOTYPES 1
 #include <GL/glew.h>
@@ -14,10 +16,16 @@
 // Third party
 #include <spdlog/spdlog.h>
 
+// Kvant Headers
+#include <Core/ResourceManager.hpp>
+
 namespace Kvant {
   using namespace std;
 
-  struct Texture {
+  struct Texture : public Resource {
+    Texture (const ResourceHandle handle, const boost::filesystem::path& filepath) : Resource(handle, filepath) {
+      load_image(filepath.string());
+    }
 
     void load_image (string file) {
       SDL_Surface *tex = IMG_Load(file.c_str());
@@ -77,6 +85,5 @@ namespace Kvant {
     }
 
     GLuint m_id{0};
-    string m_type;
   };
 }

@@ -2,6 +2,7 @@
 
 // C++ Headers
 #include <vector>
+#include <memory>
 
 // OpenGL / glew Headers
 #define GL3_PROTOTYPES 1
@@ -30,11 +31,10 @@ namespace Kvant {
 
     const vector<Vertex>& get_vertices () { return m_vertices; }
     const vector<GLuint>& get_indices () { return m_indices; }
-    const vector<Texture>& get_textures () { return m_textures; }
+    const vector<shared_ptr<Texture>>& get_textures () { return m_textures; }
 
-    void add_texture(string file) {
-      m_textures.emplace_back( );
-      m_textures[ m_textures.size()-1 ].load_image(file);
+    void add_texture(shared_ptr<Texture> texture) {
+      m_textures.push_back(texture);
     }
 
   private:
@@ -43,7 +43,7 @@ namespace Kvant {
     /* Mesh Data */
     vector<Vertex> m_vertices;
     vector<GLuint> m_indices;
-    vector<Texture> m_textures;
+    vector<shared_ptr<Texture>> m_textures;
 
     void setup_mesh ();
   };

@@ -19,6 +19,7 @@
 
 // Kvant Headers
 #include <util/Error.hpp>
+#include <Core/GameConfig.hpp>
 
 namespace Kvant {
   // for convenience
@@ -27,11 +28,6 @@ namespace Kvant {
   using namespace Kvant;
 
   class Engine;
-
-  struct WindowConfig {
-    unsigned int width, height;
-    string title;
-  };
 
   struct Window {
     Window(Kvant::Engine* engine) : m_engine(engine) {}
@@ -45,12 +41,10 @@ namespace Kvant {
 
     SDL_Window* get_window () const { return m_main_window; };
     const SDL_GLContext& get_context () const { return m_main_context; };
-    const WindowConfig& get_config () const { return m_config; };
 
     private:
       SDL_Window *m_main_window;
       SDL_GLContext m_main_context;
-      WindowConfig m_config;
       Engine* m_engine;
   };
 }

@@ -2,20 +2,27 @@
 
 // Kvant Headers
 #include <Core/Engine.hpp>
+#include <CoreEvents/InputEvent.hpp>
 #include <CoreComponents/CCamera.hpp>
+#include <CoreComponents/CControllable.hpp>
 #include <CoreSystems/NodeSystem.hpp>
 #include <CoreSystems/RenderSystem.hpp>
+#include <CoreSystems/InputSystem.hpp>
 
 namespace Kvant {
 
-  State::State () {}
+  State::State() {}
 
   void State::init (Engine* engine) {
     m_engine = engine;
 
+    auto resources = m_engine->get_game_config().get<ResourcesConfig>();
+    m_texture_resources.set_base_path(resources->textures_path);
+
     // Setup core systems
     get_system_manager().add<NodeSystem> ();
     get_system_manager().add<RenderSystem> ();
+    get_system_manager().add<InputSystem> (get_entity_manager());
 
     // Configure
     get_system_manager().configure ();
@@ -32,8 +39,9 @@ namespace Kvant {
     m_GUI_camera.assign<CCamera>();
 
     m_game_camera = get_entity_manager().create();
-    auto& config = m_engine->get_window().get_config();
-    m_game_camera.assign<CCamera>(glm::vec3(0.f, 0.f, 1.f), glm::radians(60.0f), config.width / config.height, 0.1f, 10.0f);
+    auto config = m_engine->get_game_config().get<WindowConfig>();
+    m_game_camera.assign<CCamera>(glm::vec3(0.f, 0.f, 1.f), glm::radians(60.0f), config->width / config->height, 0.1f, 10.0f);
+    m_game_camera.assign<CControllable>();
 
     on_init();
   }
@@ -51,11 +59,13 @@ namespace Kvant {
   }
 
   void State::handle_events (SDL_Event& event) {
+    get_event_manager().emit<InputEvent>(event);
     on_handle_events(event);
   }
 
   void State::update (const float dt) {
     get_system_manager().update<NodeSystem>(dt);
+    get_system_manager().update<InputSystem>(dt);
 
     on_update(dt);
   }

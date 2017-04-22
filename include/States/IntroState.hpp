@@ -15,6 +15,7 @@
 #include <CoreComponents/CNode.hpp>
 #include <CoreComponents/CMaterial.hpp>
 #include <CoreComponents/CMeshRenderer.hpp>
+#include <CoreComponents/CControllable.hpp>
 #include <CoreTypes/Vertex.hpp>
 #include <CoreTypes/Shader.hpp>
 
@@ -57,6 +58,7 @@ struct IntroState : public Kvant::State {
     auto e = create_triangle(0, 0, 1.0, "../resources/textures/C.png");
     auto e2 = create_triangle(0.5, 0.5, 0.0, "../resources/textures/brick.png");
     e2.component<CNode>()->set_rotation(-10.0f);
+    e2.assign<CControllable>();
     // e.component<CNode>()->set_rotation(45.f);
     // e.component<CNode>()->add_child(e2);
 

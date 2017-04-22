@@ -2,7 +2,7 @@
 
 namespace Kvant {
 
-  Engine::Engine () : m_window(this), m_state_manager(this), m_log(spd::stdout_color_mt("log")) {
+  Engine::Engine () : m_game_config("../resources/config.yaml"), m_window(this), m_state_manager(this), m_log(spd::stdout_color_mt("log")) {
     m_log->info("Welcome to KvantEngine.");
     m_window.init();
   }

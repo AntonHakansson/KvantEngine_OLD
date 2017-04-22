@@ -23,7 +23,8 @@ namespace Kvant {
       m_up = glm::vec3(0.0f, 1.0f, 0.0f);
       m_projection = glm::mat4();
     }
-    CCamera (const glm::vec3& pos, float fov, float aspect, float zNear, float zFar) {
+    CCamera(const glm::vec3 &pos, float fov, float aspect, float zNear,
+            float zFar) {
       m_pos = pos;
       m_forward = glm::vec3(0.0f, 0.0f, -1.0f);
       m_up = glm::vec3(0.0f, 1.0f, 0.0f);

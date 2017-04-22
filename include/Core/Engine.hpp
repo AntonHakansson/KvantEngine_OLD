@@ -10,6 +10,7 @@
 #include <spdlog/spdlog.h>
 
 // Kvant Headers
+#include <Core/GameConfig.hpp>
 #include <Core/StateManager.hpp>
 #include <Core/Window.hpp>
 
@@ -28,6 +29,7 @@ namespace Kvant {
     void run ();
     void quit ();
 
+    GameConfig& get_game_config () { return m_game_config; }
     StateManager& get_state_manager () { return m_state_manager; }
     Window& get_window () { return m_window; }
     Logger& get_logger () { return m_log; }
@@ -40,6 +42,7 @@ namespace Kvant {
 
     bool handle_quit_events (const SDL_Event& event);
 
+    GameConfig m_game_config;
     Window m_window;
     StateManager m_state_manager;
     Logger m_log;

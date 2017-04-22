@@ -21,7 +21,8 @@ namespace Kvant {
     ~NodeSystem ();
 
     void configure (entityx::EventManager& events) override;
-    void update (entityx::EntityManager& entities, entityx::EventManager& events, entityx::TimeDelta dt) override;
+    void update(entityx::EntityManager &entities, entityx::EventManager &events,
+                entityx::TimeDelta dt) override;
 
     void receive (const entityx::ComponentRemovedEvent<CNode>& event);
     void receive (const entityx::EntityDestroyedEvent& event);

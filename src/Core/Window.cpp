@@ -1,45 +1,13 @@
 #include <Core/Window.hpp>
+#include <Core/Engine.hpp>
 
 namespace Kvant {
   using namespace std;
-  using nlohmann::json;
-
-  /******************************/
-  /******** WindowConfig ********/
-  /******************************/
-  void to_json (json& j, const WindowConfig& w) {
-    j = json{{"width", w.width}, {"height", w.height}, {"title", w.title}};
-  }
-  void from_json (const json& j, WindowConfig& w) {
-    w.width = j["width"].get<unsigned int>();
-    w.height = j["height"].get<unsigned int>();
-    w.title = j["title"].get<string>();
-  }
-
-  void Window::load_config () {
-    ifstream i{"../resources/config.json"};
-    json j;
-    i >> j;
-    m_config = j["window"].get<WindowConfig>();
-
-    // Log read data
-    namespace spd = spdlog;
-    spdlog::get("log")->info("Read window config. title: \"{}\", width: {}, height: {}",  m_config.title, m_config.width, m_config.height);
-  }
-
-  void Window::save_config () {
-    ofstream o("../resources/config.json");
-    json j;
-    j["window"] = m_config;
-    o << j;
-  }
 
   /******************************/
   /********    Window    ********/
   /******************************/
   bool Window::init () {
-    load_config ();
-
     // Initialize SDL's Video subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
       spdlog::get("log")->error("Failed to init SDL:\n{}", SDL_GetError());
@@ -54,10 +22,13 @@ namespace Kvant {
     }
 
     // Create our window centered at 512x512 resolution
-    m_main_window = SDL_CreateWindow(m_config.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-      m_config.width, m_config.height, SDL_WINDOW_OPENGL);
+    auto config = m_engine->get_game_config().get<WindowConfig>();
+    int flags = SDL_WINDOW_OPENGL | (config->fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0);
+    m_main_window = SDL_CreateWindow(
+        config->title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        config->width, config->height, flags);
 
-      // Check that everything worked out okay
+    // Check that everything worked out okay
     if (!m_main_window) {
       namespace spd = spdlog;
       spdlog::get("log")->error("Unable to create window");

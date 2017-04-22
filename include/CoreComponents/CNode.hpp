@@ -17,6 +17,7 @@ namespace Kvant {
 
   class CNode : entityx::Component<CNode> {
     friend class NodeSystem;
+    friend class CControllable;
 
   public:
     enum Tags {

@@ -16,7 +16,8 @@ namespace Kvant {
     events.subscribe<entityx::EntityDestroyedEvent>(*this);
   }
 
-  void NodeSystem::update (entityx::EntityManager& entities, entityx::EventManager&,  entityx::TimeDelta) {
+  void NodeSystem::update(entityx::EntityManager &entities,
+                          entityx::EventManager &, entityx::TimeDelta) {
     for (auto e : entities.entities_with_components<CNode>()) {
       if (e.component<CNode>()->is_active()) {
         assess_node_removals (e);
@@ -87,7 +88,9 @@ namespace Kvant {
 
           // Replace owner
           if (ac.component<CNode>()->m_parent)
-            ac.component<CNode>()->m_parent.component<CNode>()->m_children.erase(ac);
+            ac.component<CNode>()
+                ->m_parent.component<CNode>()
+                ->m_children.erase(ac);
 
           ac.component<CNode>()->m_parent = entity;
           node->m_children.insert(ac);
@@ -105,7 +108,7 @@ namespace Kvant {
     for (entityx::Entity node = entity; node.valid(); node = node.component<CNode>()->m_parent) {
       world_transform = node.component<CNode>()->get_transform() * world_transform;
     }
-    
+
     entity.component<CNode>()->m_world_transform = world_transform;
   }
 }

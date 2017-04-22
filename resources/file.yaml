@@ -1,0 +1,12 @@
+input:
+  primary: !<!> Left Ctrl
+  _commnent: !<!> " Input configuration \n see https://wiki.libsdl.org/SDL_Scancode for valid keys "
+window:
+  fullscreen: false
+  _comment: !<!> Window configuration
+  title: !<!> KvantEngine
+  height: 600
+  width: 800
+resources:
+  shaders: !<!> ../resources/shaders/
+  textures: !<!> ../resources/textures/

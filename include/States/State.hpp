@@ -10,6 +10,10 @@
 #include <entityx/entityx.h>
 #include <entityx/deps/Dependencies.h>
 
+// Kvant Headers
+#include <Core/ResourceManager.hpp>
+#include <CoreTypes/Texture.hpp>
+
 namespace Kvant {
 
   namespace ex = entityx;
@@ -48,11 +52,15 @@ namespace Kvant {
     ex::EntityManager& get_entity_manager () { return m_entityx.entities; }
     ex::SystemManager& get_system_manager () { return m_entityx.systems; }
 
+    const ResourceManager<Texture> get_texture_resources() { return m_texture_resources; };
+
   protected:
     ex::EntityX m_entityx;
     std::vector<ex::Entity> m_layers;
 
     ex::Entity m_GUI_camera, m_game_camera;
+
+    ResourceManager<Texture> m_texture_resources;
 
     Engine* m_engine;
     friend struct StateManager;

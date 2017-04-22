@@ -24,8 +24,10 @@ add_executable(${PROJECT_NAME}
   src/Core/StateManager.cpp
   src/CoreComponents/CNode.cpp
   src/CoreComponents/CMeshRenderer.cpp
+  src/CoreComponents/CControllable.cpp
   src/CoreSystems/NodeSystem.cpp
   src/CoreSystems/RenderSystem.cpp
+  src/CoreSystems/InputSystem.cpp
   src/States/State.cpp
   src/util/Error.cpp
   src/main.cpp
@@ -64,10 +66,13 @@ if (GLEW_FOUND)
 endif()
 
 # Link to boost libraries
-find_package(Boost REQUIRED COMPONENTS system)
-target_link_libraries(${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY})
+find_package(Boost REQUIRED COMPONENTS system filesystem)
+target_link_libraries(${PROJECT_NAME} ${Boost_SYSTEM_LIBRARY} ${Boost_FILESYSTEM_LIBRARY})
 add_definitions(-DBOOST_LOG_DYN_LINK)
 
 # Link to entityx
 link_directories(/usr/lib)
 target_link_libraries(${PROJECT_NAME} entityx)
+
+# Link to yaml
+target_link_libraries(${PROJECT_NAME} yaml-cpp)
