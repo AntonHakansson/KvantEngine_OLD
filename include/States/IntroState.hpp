@@ -45,18 +45,20 @@ struct IntroState : public Kvant::State {
     indices.push_back(2);
     indices.push_back(3);
 
-    vector<Texture> textures;
+    vector<string> textures = {file};
 
     e.assign<CMeshRenderer>(vertices, indices, textures);
-    e.component<CMeshRenderer>()->add_texture( file );
     return e;
   }
 
   void on_init() override {
     spdlog::get("log")->info("Inside CIntroState");
 
-    auto e = create_triangle(0, 0, 1.0, "../resources/textures/C.png");
-    auto e2 = create_triangle(0.5, 0.5, 0.0, "../resources/textures/brick.png");
+    m_texture_resources.add("C.png");
+    m_texture_resources.add("brick.png");
+
+    auto e = create_triangle(0, 0, 1.0, "C.png");
+    auto e2 = create_triangle(0.5, 0.5, 0.0, "brick.png");
     e2.component<CNode>()->set_rotation(-10.0f);
     e2.assign<CControllable>();
     // e.component<CNode>()->set_rotation(45.f);

@@ -6,7 +6,8 @@
 
 namespace Kvant {
 
-  RenderSystem::RenderSystem () {
+  RenderSystem::RenderSystem (Engine* engine) {
+    m_engine = engine;
     m_time_start = std::chrono::high_resolution_clock::now();
   }
   RenderSystem::~RenderSystem () {
@@ -69,7 +70,10 @@ namespace Kvant {
     if (mesh_renderer) {
       // bind textures
       for (auto i{0u}; i < mesh_renderer->m_textures.size(); i++) {
-        mesh_renderer->m_textures[i].bind(i);
+        auto texture_manager =
+            m_engine->get_state_manager().peek_state()->get_texture_resources();
+        auto texture = texture_manager.get(mesh_renderer->m_textures[i]);
+        if(texture) texture->bind(i);
       }
 
       // Draw mesh

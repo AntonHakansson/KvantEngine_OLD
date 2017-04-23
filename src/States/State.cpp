@@ -21,7 +21,7 @@ namespace Kvant {
 
     // Setup core systems
     get_system_manager().add<NodeSystem> ();
-    get_system_manager().add<RenderSystem> ();
+    get_system_manager().add<RenderSystem> (m_engine);
     get_system_manager().add<InputSystem> (get_entity_manager());
 
     // Configure

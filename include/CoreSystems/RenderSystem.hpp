@@ -9,13 +9,16 @@
 // Third-party
 #include <entityx/entityx.h>
 
+// Kvant Headers
+#include <Core/Engine.hpp>
+
 namespace Kvant {
 
   namespace ex = entityx;
 
   class RenderSystem : public ex::System<RenderSystem> {
   public:
-    RenderSystem ();
+    RenderSystem (Engine* engine);
     ~RenderSystem ();
 
     void set_render_root (ex::Entity root);
@@ -25,6 +28,8 @@ namespace Kvant {
   private:
     void render_entity (ex::Entity entity);
     ex::Entity m_render_root, m_camera;
+
+    Engine* m_engine;
 
     std::chrono::high_resolution_clock::time_point m_time_start;
   };

@@ -1,11 +1,13 @@
 #include <CoreComponents/CMeshRenderer.hpp>
 
 namespace Kvant {
-  CMeshRenderer::CMeshRenderer (const vector<Vertex>& _vertices, const vector<GLuint>& _indices, const vector<Texture>& _textures) {
-    m_vertices = _vertices;
-    m_indices = _indices;
-    m_textures = _textures;
-    setup_mesh ();
+CMeshRenderer::CMeshRenderer(const vector<Vertex> &_vertices,
+                             const vector<GLuint> &_indices,
+                             const vector<string> &_textures) {
+  m_vertices = _vertices;
+  m_indices = _indices;
+  m_textures = _textures;
+  setup_mesh();
   }
 
   CMeshRenderer::~CMeshRenderer () {
