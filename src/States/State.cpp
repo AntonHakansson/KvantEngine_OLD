@@ -67,6 +67,8 @@ namespace Kvant {
     get_system_manager().update<NodeSystem>(dt);
     get_system_manager().update<InputSystem>(dt);
 
+    m_texture_resources.update();
+
     on_update(dt);
   }
 

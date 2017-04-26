@@ -15,22 +15,6 @@
 #include <spdlog/spdlog.h>
 
 using namespace Kvant;
-
-class TestResource : public Resource {
-public:
-  TestResource (const ResourceHandle handle, const boost::filesystem::path& filepath) : Resource(handle, filepath) {
-    m_details = filepath.string();
-  }
-
-  ~TestResource () {
-  }
-
-  std::string get_details () { return m_details; }
-
-private:
-  std::string m_details;
-};
-
 namespace spd = spdlog;
 int main(int, char**) {
 

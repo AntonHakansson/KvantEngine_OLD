@@ -17,6 +17,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic-errors")
 include_directories(include)
 include_directories(src)
 include_directories(third-party)
+include_directories(third-party/cpp-filewatcher/include/)
 
 add_executable(${PROJECT_NAME}
   src/Core/Engine.cpp
@@ -76,3 +77,7 @@ target_link_libraries(${PROJECT_NAME} entityx)
 
 # Link to yaml
 target_link_libraries(${PROJECT_NAME} yaml-cpp)
+
+# Link to file watcher
+link_directories(third-party/cpp-filewatcher/Lib)
+target_link_libraries(${PROJECT_NAME} cpp-filewatcher)

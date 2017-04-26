@@ -15,6 +15,7 @@ namespace Kvant {
 
     while (m_running) {
       auto time_point1(chrono::high_resolution_clock::now());
+
       events_phase();
       update_phase();
       draw_phase();
@@ -22,6 +23,7 @@ namespace Kvant {
       auto time_point2(chrono::high_resolution_clock::now());
       auto elapsed_time(time_point2 - time_point1);
       m_dt = chrono::duration_cast<chrono::duration<float, milli>>(elapsed_time).count();
+      // if (std::sin(chrono::high_resolution_clock::now().count()/1000) > 0.95) m_log->info("FPS: {}", 1./(m_dt/1000.));
     }
     cleanup_phase();
   }

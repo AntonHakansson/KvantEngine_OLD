@@ -1,3 +1,4 @@
 -I./src
 -I./include
 -I./third-party
+-I./third-party/cpp-filewatcher/include

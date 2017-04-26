@@ -64,7 +64,7 @@ struct IntroState : public Kvant::State {
     // e.component<CNode>()->set_rotation(45.f);
     // e.component<CNode>()->add_child(e2);
 
-    add_to_layer (State::GameLayer::UI, e);
+    add_to_layer (State::GameLayer::FOREGROUND, e);
     add_to_layer(State::GameLayer::FOREGROUND, e2);
   }
 

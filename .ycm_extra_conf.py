@@ -42,6 +42,7 @@ flags = [
     '-I/home/batman/git/KvantEngine/library',
     '-I/home/batman/git/KvantEngine/src',
     '-I/home/batman/git/KvantEngine/third-party',
+    '-I/home/batman/git/KvantEngine/third-party/cpp-filewatcher/include',
     '-I/usr/include/SDL2',
     '-Wall',
     '-Werror',
@@ -145,4 +146,3 @@ def FlagsForFile( filename, **kwargs ):
     'flags': final_flags,
     'do_cache': True
   }
-

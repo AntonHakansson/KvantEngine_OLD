@@ -1,0 +1,3 @@
+[submodule "third-party/cpp-filewatcher"]
+	path = third-party/cpp-filewatcher
+	url = https://github.com/AntonHakansson/cpp-filewatcher.git

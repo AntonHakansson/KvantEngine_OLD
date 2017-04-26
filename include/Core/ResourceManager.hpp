@@ -11,6 +11,7 @@
 
 // Third-party
 #include <spdlog/spdlog.h>
+#include <FileWatcher.hpp>
 
 namespace Kvant {
 
@@ -28,7 +29,8 @@ namespace Kvant {
       m_filepath = filepath;
       m_handle = handle;
     }
-    virtual ~Resource() {}
+    virtual ~Resource() {
+    }
 
     const fs::path& get_filepath () { return m_filepath; }
     const ResourceHandle& get_handle () { return m_handle; }
@@ -39,10 +41,25 @@ namespace Kvant {
   };
 
 
+  /// Processes a file action
+  class UpdateListener
+  {
+  public:
+  	UpdateListener() {}
+  	void handleFileAction(FW::WatchId, const FW::String& dir, const FW::String& filename,
+  		FW::Action action)
+  	{
+  		std::cout << "DIR (" << dir + ") FILE (" + filename + ") has event " << (int)action << std::endl;
+  	}
+  };
+
   template <class T>
   class ResourceManager {
   public:
-    ResourceManager () { }
+    ResourceManager () {
+    }
+    virtual ~ResourceManager () {
+    }
 
     std::shared_ptr<T> get (const ResourceHandle handle) {
       auto found_it = m_resources.find(handle);
@@ -78,16 +95,46 @@ namespace Kvant {
     void set_base_path (const std::string& base_filepath) {
       if (!fs::is_directory(base_filepath))
         std::cout << "Base directory \"" << base_filepath << "\" is not a directory" << std::endl;
-      else
-          m_base_path = base_filepath;
+      else {
+        if (m_watch_id != INVALID) m_filewatcher.remove_watch(m_watch_id);
+        m_base_path = base_filepath;
+        using namespace std::placeholders;
+        m_watch_id = m_filewatcher.add_watch(m_base_path.string(), std::bind(&ResourceManager::handle_file_update, this, _1, _2, _3, _4));
+      }
     }
 
     std::shared_ptr<T> operator [](ResourceHandle handle) {
       return get(handle);
     }
 
+    void update () {
+      if (m_watch_id != INVALID)
+        m_filewatcher.update();
+    }
+
+    void handle_file_update(FW::WatchId, const std::string& dir, const std::string& filename,
+               FW::Action action) {
+        switch(action) {
+        case FW::Action::Add:
+           std::cout << "File (" << dir + "\\" + filename << ") Added! " <<  std::endl;
+           break;
+        case FW::Action::Delete:
+           std::cout << "File (" << dir + "\\" + filename << ") Deleted! " << std::endl;
+           break;
+        case FW::Action::Modified:
+           std::cout << "File (" << dir + "\\" + filename << ") Modified! " << std::endl;
+           break;
+        default:
+           std::cout << "Should never happen!" << std::endl;
+     }
+   }
+
   private:
     std::unordered_map<ResourceHandle, std::shared_ptr<T>> m_resources;
+
+    FW::FileWatcher m_filewatcher;
+    const FW::WatchId INVALID{99999};
+    FW::WatchId m_watch_id{INVALID};
     fs::path m_base_path{"./"};
   };
 }

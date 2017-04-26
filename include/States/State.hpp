@@ -52,7 +52,7 @@ namespace Kvant {
     ex::EntityManager& get_entity_manager () { return m_entityx.entities; }
     ex::SystemManager& get_system_manager () { return m_entityx.systems; }
 
-    const ResourceManager<Texture> get_texture_resources() { return m_texture_resources; };
+    const ResourceManager<Texture>& get_texture_resources() { return m_texture_resources; };
 
   protected:
     ex::EntityX m_entityx;
