@@ -29,6 +29,6 @@
 *.app
 
 # build directory
-/build/*
+*/build/*
 # docs directory
-/doc/*
+*/doc/*
