@@ -1,0 +1,7 @@
+/home/batman/git/KvantEngine/engine/build/CMakeFiles/install/strip.dir
+/home/batman/git/KvantEngine/engine/build/CMakeFiles/install/local.dir
+/home/batman/git/KvantEngine/engine/build/CMakeFiles/KvantEngine.dir
+/home/batman/git/KvantEngine/engine/build/CMakeFiles/edit_cache.dir
+/home/batman/git/KvantEngine/engine/build/CMakeFiles/rebuild_cache.dir
+/home/batman/git/KvantEngine/engine/build/CMakeFiles/install.dir
+/home/batman/git/KvantEngine/engine/build/CMakeFiles/list_install_components.dir

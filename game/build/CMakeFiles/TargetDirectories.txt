@@ -1,0 +1,3 @@
+/home/batman/git/KvantEngine/game/build/CMakeFiles/rebuild_cache.dir
+/home/batman/git/KvantEngine/game/build/CMakeFiles/edit_cache.dir
+/home/batman/git/KvantEngine/game/build/CMakeFiles/kvant_game.dir
