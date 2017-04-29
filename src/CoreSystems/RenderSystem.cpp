@@ -70,11 +70,11 @@ namespace Kvant {
     if (mesh_renderer) {
       // bind textures
       for (auto i{0u}; i < mesh_renderer->m_textures.size(); i++) {
-        auto state = m_engine->get_state_manager().peek_state();
+        auto* state = m_engine->get_state_manager().peek_state();
         if (!state) break;
 
-        auto texture_manager = state->get_texture_resources();
-        auto texture = texture_manager.get(mesh_renderer->m_textures[i]);
+        auto *texture_manager = state->get_texture_resources();
+        auto texture = texture_manager->get(mesh_renderer->m_textures[i]);
         if(texture) texture->bind(i);
       }
 

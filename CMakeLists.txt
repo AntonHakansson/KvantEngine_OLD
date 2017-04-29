@@ -79,5 +79,4 @@ target_link_libraries(${PROJECT_NAME} entityx)
 target_link_libraries(${PROJECT_NAME} yaml-cpp)
 
 # Link to file watcher
-link_directories(third-party/cpp-filewatcher/Lib)
 target_link_libraries(${PROJECT_NAME} cpp-filewatcher)
