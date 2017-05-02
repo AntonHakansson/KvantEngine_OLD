@@ -1,3 +1,6 @@
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
+include(cotire)
+
 # Specify the version being used aswell as the language
 cmake_minimum_required(VERSION 2.8)
 # Name your project here
@@ -16,10 +19,13 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic-errors")
 
 include_directories(include)
 include_directories(src)
+include_directories(../engine/third-party)
 
 add_executable(${PROJECT_NAME}
   main.cpp
 )
+# Cotire PCH
+cotire(${PROJECT_NAME})
 
 INCLUDE(FindPkgConfig)
 

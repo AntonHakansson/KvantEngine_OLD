@@ -14,6 +14,7 @@
 #include <KvantEngine/Core/GameConfig.hpp>
 #include <KvantEngine/Core/StateManager.hpp>
 #include <KvantEngine/Core/Window.hpp>
+#include <KvantEngine/imgui/imgui_impl_sdl_gl3.h>
 
 namespace Kvant {
 

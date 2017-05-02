@@ -32,10 +32,10 @@ struct IntroState : public Kvant::State {
     using namespace glm;
 
     vector<Vertex> vertices;
-    vertices.push_back( Vertex{vec3{-0.5f, -0.5f, 0.0f}, vec3{red, 1, 0}, vec2{0.f, 0.f}} );
-    vertices.push_back( Vertex{vec3{-0.5f, 0.5f, 0.0f}, vec3{red, 1, 0}, vec2{0.f, 1.f}} );
-    vertices.push_back( Vertex{vec3{0.5f, 0.5f, 0.0f}, vec3{red, 1, 0}, vec2{1.f, 1.f}} );
-    vertices.push_back( Vertex{vec3{0.5f, -0.5f, 0.0f}, vec3{red, 1, 0}, vec2{1.f, 0.f}} );
+    vertices.push_back( Vertex{vec3{-0.5f, -0.5f, 0.0f}, vec3{red, 1, 0}, vec2{0.f, 1.f}} );
+    vertices.push_back( Vertex{vec3{-0.5f, 0.5f, 0.0f}, vec3{red, 1, 0}, vec2{0.f, 0.f}} );
+    vertices.push_back( Vertex{vec3{0.5f, 0.5f, 0.0f}, vec3{red, 1, 0}, vec2{1.f, 0.f}} );
+    vertices.push_back( Vertex{vec3{0.5f, -0.5f, 0.0f}, vec3{red, 1, 0}, vec2{1.f, 1.f}} );
 
     vector<GLuint> indices;
     indices.push_back(0);
@@ -59,13 +59,15 @@ struct IntroState : public Kvant::State {
 
     auto e = create_triangle(0, 0, 1.0, "C.png");
     auto e2 = create_triangle(0.5, 0.5, 0.0, "brick.png");
-    e2.component<CNode>()->set_rotation(-10.0f);
-    e2.assign<CControllable>();
-    // e.component<CNode>()->set_rotation(45.f);
-    // e.component<CNode>()->add_child(e2);
 
-    add_to_layer (State::GameLayer::FOREGROUND, e);
-    add_to_layer(State::GameLayer::FOREGROUND, e2);
+    e.component<CNode>()->add_child(e2);
+    e.component<CNode>()->name = "C++";
+
+    e2.assign<CControllable>();
+    e2.component<CNode>()->name = "Brick";
+
+    add_to_layer (State::GameLayer::ORTHO, e);
+    // add_to_layer(State::GameLayer::ORTHO, e2);
   }
 
   void on_cleanup() override {

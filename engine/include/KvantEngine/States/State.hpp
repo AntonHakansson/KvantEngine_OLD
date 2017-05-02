@@ -26,9 +26,8 @@ namespace Kvant {
   public:
 
     enum GameLayer {
-      BACKGROUND = 0,
-      MIDDLEGROUND,
-      FOREGROUND,
+      PERSPECTIVE = 0,
+      ORTHO = 0,
       UI,
       TOTAL
     };

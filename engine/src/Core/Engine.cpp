@@ -36,11 +36,13 @@ namespace Kvant {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
       if (handle_quit_events(event)) break;
+      ImGui_ImplSdlGL3_ProcessEvent(&event);
       m_state_manager.handle_events(event);
     }
   }
 
   void Engine::update_phase () {
+    ImGui_ImplSdlGL3_NewFrame(get_window().get_window());
     m_state_manager.update(m_dt);
   }
 
@@ -49,6 +51,10 @@ namespace Kvant {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_state_manager.draw(m_dt);
+
+    ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
+    ImGui::ShowTestWindow(&m_running);
+    ImGui::Render();
 
     SDL_GL_SwapWindow(m_window.get_window());
   }

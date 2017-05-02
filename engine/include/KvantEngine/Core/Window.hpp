@@ -19,6 +19,7 @@
 // Kvant Headers
 #include <KvantEngine/util/Error.hpp>
 #include <KvantEngine/Core/GameConfig.hpp>
+#include <KvantEngine/imgui/imgui_impl_sdl_gl3.h>
 
 namespace Kvant {
   // for convenience

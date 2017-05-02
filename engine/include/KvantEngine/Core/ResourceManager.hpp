@@ -120,7 +120,7 @@ namespace Kvant {
     std::unordered_map<ResourceHandle, std::shared_ptr<T>> m_resources;
 
     FW::FileWatcher m_filewatcher;
-    const FW::WatchId INVALID{99999};
+    const FW::WatchId INVALID{std::numeric_limits<FW::WatchId>::max()};
     FW::WatchId m_watch_id{INVALID};
     fs::path m_base_path{"./"};
   };

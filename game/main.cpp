@@ -18,7 +18,7 @@ using namespace Kvant;
 namespace spd = spdlog;
 int main(int, char**) {
 
-  auto engine = std::make_unique<Kvant::Engine>("../resources/config.yaml");
+  auto engine = std::make_unique<Engine>("../resources/config.yaml");
   engine->get_state_manager().push_state<IntroState>();
   engine->run();
 

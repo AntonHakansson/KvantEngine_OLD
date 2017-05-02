@@ -1,9 +1,9 @@
 window:
   _comment: "Window configuration"
   title: "KvantEngine"
-  width: 800
-  height: 600
-  fullscreen: false
+  width: 1480
+  height: 880
+  fullscreen: true
 resources:
   textures: "../resources/textures/"
   shaders: "../resources/shaders/"

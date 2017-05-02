@@ -20,7 +20,7 @@ namespace Kvant {
     m_texture_resources.set_base_path(resources->textures_path);
 
     // Setup core systems
-    get_system_manager().add<NodeSystem> ();
+    get_system_manager().add<NodeSystem> (m_engine);
     get_system_manager().add<RenderSystem> (m_engine);
     get_system_manager().add<InputSystem> (get_entity_manager());
 
@@ -75,14 +75,14 @@ namespace Kvant {
   void State::draw (const float dt) {
     // Render game
     get_system_manager().system<RenderSystem>()->set_camera( m_game_camera );
-    for (unsigned int l{0u}; l < GameLayer::UI; l++) {
+    for (unsigned int l{0u}; l < GameLayer::ORTHO; l++) {
       get_system_manager().system<RenderSystem>()->set_render_root( m_layers[l] );
       get_system_manager().update<RenderSystem>(dt);
     }
 
     // Render GUI
     get_system_manager().system<RenderSystem>()->set_camera( m_GUI_camera );
-    for (unsigned int l{GameLayer::UI}; l < GameLayer::TOTAL; l++) {
+    for (unsigned int l{GameLayer::ORTHO}; l < GameLayer::TOTAL; l++) {
       get_system_manager().system<RenderSystem>()->set_render_root( m_layers[l] );
       get_system_manager().update<RenderSystem>(dt);
     }

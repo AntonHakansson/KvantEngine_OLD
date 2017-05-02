@@ -1,3 +1,6 @@
 [submodule "third-party/cpp-filewatcher"]
 	path = third-party/cpp-filewatcher
 	url = https://github.com/AntonHakansson/cpp-filewatcher.git
+[submodule "engine/third-party/imgui"]
+	path = engine/third-party/imgui
+	url = https://github.com/ocornut/imgui

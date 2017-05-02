@@ -1,3 +1,6 @@
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
+include(cotire)
+
 # Specify the version being used aswell as the language
 cmake_minimum_required(VERSION 2.8)
 # Name your project here
@@ -10,7 +13,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wextra")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic-errors")
 
@@ -31,7 +34,15 @@ add_library(${PROJECT_NAME}
   src/CoreSystems/InputSystem.cpp
   src/States/State.cpp
   src/util/Error.cpp
+  src/imgui/imgui_impl_sdl_gl3.cpp
+
+  third-party/imgui/imgui_demo.cpp
+  third-party/imgui/imgui.cpp
+  third-party/imgui/imgui_draw.cpp
 )
+
+# Cotire PCH
+cotire(${PROJECT_NAME})
 
 # Set location for library installation
 install(TARGETS ${PROJECT_NAME} DESTINATION /usr/lib)
@@ -84,3 +95,6 @@ target_link_libraries(${PROJECT_NAME} yaml-cpp)
 
 # Link to file watcher
 target_link_libraries(${PROJECT_NAME} cpp-filewatcher)
+
+# Link to freeimage
+target_link_libraries(${PROJECT_NAME} freeimage)

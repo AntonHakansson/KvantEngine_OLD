@@ -42,6 +42,9 @@ namespace Kvant {
         render_entity (child);
       }
     }
+    
+    if (!node->is_active()) return;
+    if (!node->is_visible()) return;
 
     // Use current m_material
     auto mesh_renderer = entity.component<CMeshRenderer> ();
