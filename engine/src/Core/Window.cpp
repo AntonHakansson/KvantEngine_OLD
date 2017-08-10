@@ -51,9 +51,6 @@ namespace Kvant {
     glewInit ();
     #endif
 
-    // bind imgui to window
-    ImGui_ImplSdlGL3_Init (m_main_window);
-
     return true;
   }
 

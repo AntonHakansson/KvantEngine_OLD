@@ -5,6 +5,9 @@ namespace Kvant {
   Engine::Engine (std::string config_dir) : m_game_config(config_dir), m_window(this), m_state_manager(this), m_log(spd::stdout_color_mt("log")) {
     m_log->info("Welcome to KvantEngine.");
     m_window.init();
+
+    // bind imgui to window
+    ImGui_ImplSdlGL3_Init (get_window().get_sdl_window());
   }
 
   Engine::~Engine () {
@@ -23,7 +26,6 @@ namespace Kvant {
       auto time_point2(chrono::high_resolution_clock::now());
       auto elapsed_time(time_point2 - time_point1);
       m_dt = chrono::duration_cast<chrono::duration<float, milli>>(elapsed_time).count();
-      // if (std::sin(chrono::high_resolution_clock::now().count()/1000) > 0.95) m_log->info("FPS: {}", 1./(m_dt/1000.));
     }
     cleanup_phase();
   }
@@ -36,13 +38,19 @@ namespace Kvant {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
       if (handle_quit_events(event)) break;
+
+      // Toggle debug menu
+      if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_F1) {
+        m_imgui_state.show_debug_menu = !m_imgui_state.show_debug_menu;
+      }
+
       ImGui_ImplSdlGL3_ProcessEvent(&event);
       m_state_manager.handle_events(event);
     }
   }
 
   void Engine::update_phase () {
-    ImGui_ImplSdlGL3_NewFrame(get_window().get_window());
+    ImGui_ImplSdlGL3_NewFrame(get_window().get_sdl_window());
     m_state_manager.update(m_dt);
   }
 
@@ -52,11 +60,9 @@ namespace Kvant {
 
     m_state_manager.draw(m_dt);
 
-    ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
-    ImGui::ShowTestWindow(&m_running);
-    ImGui::Render();
+    render_imgui();
 
-    SDL_GL_SwapWindow(m_window.get_window());
+    SDL_GL_SwapWindow(m_window.get_sdl_window());
   }
 
   void Engine::cleanup_phase () {
@@ -82,6 +88,25 @@ namespace Kvant {
     }
 
     return false;
+  }
+
+  void Engine::render_imgui () {
+    if (!m_imgui_state.show_debug_menu) return;
+    ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiSetCond_FirstUseEver);
+
+    auto fps = 1./(m_dt/1000.);
+
+    ImGui::Begin("KvantEngine Debug Menu");
+    ImGui::Text("FPS: %f", fps);
+    ImGui::Checkbox("ImGui test window", &m_imgui_state.show_imgui_debug);
+    if (m_imgui_state.show_imgui_debug)
+      ImGui::ShowTestWindow(&m_imgui_state.show_imgui_debug);
+
+    ImGui::Checkbox("Node tree", &m_imgui_state.show_node_tree);
+    ImGui::Checkbox("Inspector", &m_imgui_state.show_inspector);
+    ImGui::End();
+
+    ImGui::Render();
   }
 
 }

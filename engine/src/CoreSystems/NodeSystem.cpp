@@ -21,7 +21,8 @@ namespace Kvant {
   void NodeSystem::update(entityx::EntityManager &entities,
                           entityx::EventManager &, entityx::TimeDelta) {
 
-    draw_imgui_tree (entities);
+    if (m_engine->get_imgui_state().show_node_tree)
+      draw_imgui_tree (entities);
 
     for (auto e : entities.entities_with_components<CNode>()) {
       if (e.component<CNode>()->is_active()) {
@@ -133,10 +134,6 @@ namespace Kvant {
       }
       ImGui::TreePop();
     }
-
-    /*if (ImGui::CollapsingHeader("Stats")) {
-      ImGui::Text("CNodes: " + std::to_string( entities.entities_with_components<CNode>() ));
-    }*/
 
     ImGui::End();
   }

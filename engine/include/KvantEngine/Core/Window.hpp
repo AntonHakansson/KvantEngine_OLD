@@ -19,7 +19,6 @@
 // Kvant Headers
 #include <KvantEngine/util/Error.hpp>
 #include <KvantEngine/Core/GameConfig.hpp>
-#include <KvantEngine/imgui/imgui_impl_sdl_gl3.h>
 
 namespace Kvant {
   // for convenience
@@ -30,6 +29,7 @@ namespace Kvant {
 
   struct Window {
     Window(Kvant::Engine* engine) : m_engine(engine) {}
+    ~Window() { cleanup(); }
 
     bool init ();
     bool set_gl_attributes ();
@@ -38,11 +38,11 @@ namespace Kvant {
     void load_config ();
     void save_config ();
 
-    SDL_Window* get_window () const { return m_main_window; };
+    SDL_Window* get_sdl_window () const { return m_main_window; };
     const SDL_GLContext& get_context () const { return m_main_context; };
 
     private:
-      SDL_Window *m_main_window;
+      SDL_Window* m_main_window;
       SDL_GLContext m_main_context;
       Engine* m_engine;
   };

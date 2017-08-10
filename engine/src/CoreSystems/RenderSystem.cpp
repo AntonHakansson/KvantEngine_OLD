@@ -6,8 +6,7 @@
 
 namespace Kvant {
 
-  RenderSystem::RenderSystem (Engine* engine) {
-    m_engine = engine;
+  RenderSystem::RenderSystem (Engine* engine) : m_engine(engine) {
     m_time_start = std::chrono::high_resolution_clock::now();
   }
   RenderSystem::~RenderSystem () {
@@ -42,7 +41,7 @@ namespace Kvant {
         render_entity (child);
       }
     }
-    
+
     if (!node->is_active()) return;
     if (!node->is_visible()) return;
 
