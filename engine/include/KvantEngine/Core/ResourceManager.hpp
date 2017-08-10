@@ -9,38 +9,20 @@
 
 #include <boost/filesystem.hpp>
 
-
 // Third-party
 #include <spdlog/spdlog.h>
 #include <FileWatcher/FileWatcher.hpp>
+
+// Kvant Headers
+#include <KvantEngine/CoreTypes/Resource.hpp>
+#include <KvantEngine/CoreTypes/Texture.hpp>
+
 
 namespace Kvant {
 
   namespace fs = boost::filesystem;
 
   using ResourceHandle = std::string;
-
-  class Resource {
-  public:
-    Resource(const ResourceHandle handle, const fs::path& filepath) {
-
-      if (!fs::exists(filepath))
-        std::cout <<  "File \"" << filepath <<"\" doesn't exist" << std::endl;
-
-      m_filepath = filepath;
-      m_handle = handle;
-    }
-    virtual ~Resource() {
-    }
-
-    const fs::path& get_filepath () { return m_filepath; }
-    const ResourceHandle& get_handle () { return m_handle; }
-
-  protected:
-    fs::path m_filepath;
-    ResourceHandle m_handle;
-  };
-
 
   template <class T>
   class ResourceManager {
@@ -86,7 +68,7 @@ namespace Kvant {
         if (m_watch_id != INVALID) m_filewatcher.remove_watch(m_watch_id);
         m_base_path = base_filepath;
         using namespace std::placeholders;
-        m_watch_id = m_filewatcher.add_watch(base_filepath, true, std::bind(&ResourceManager::handle_file_update, this, _1, _2, _3, _4));
+        m_watch_id = m_filewatcher.add_watch(base_filepath, true, std::bind(&ResourceManager::handle_file_update<T>, this, _1, _2, _3, _4));
       }
     }
 
@@ -99,22 +81,28 @@ namespace Kvant {
         m_filewatcher.update();
     }
 
+    template<class Texture>
     void handle_file_update(FW::WatchId, const std::string& dir, const std::string& filename,
                FW::Action action) {
+      // Return if texture is not an observed resource
+      if (!m_resources[filename]) return;
+
       switch(action) {
         case FW::Action::Add:
-           std::cout << "File (" << dir + "/" + filename << ") Added! " <<  std::endl;
-           break;
+          std::cout << "Texture (" << dir + filename << ") Reappeared! " <<  std::endl;
+          break;
         case FW::Action::Delete:
-           std::cout << "File (" << dir + "/" + filename << ") Deleted! " << std::endl;
-           break;
+          std::cout << "Texture (" << dir + filename << ") Deleted! " << std::endl;
+          m_resources[filename]->load_image(m_base_path / fs::path("removed.png"));
+          break;
         case FW::Action::Modified:
-           std::cout << "File (" << dir + "/" + filename << ") Modified! " << std::endl;
-           break;
+          std::cout << "Texture (" << dir + filename << ") Modified! " << std::endl;
+          m_resources[filename]->load_image(dir + filename);
+          break;
         default:
-           std::cout << "Should never happen!" << std::endl;
+          std::cout << "Should never happen!" << std::endl;
      }
-   }
+    }
 
   private:
     std::unordered_map<ResourceHandle, std::shared_ptr<T>> m_resources;

@@ -17,17 +17,30 @@
 #include <spdlog/spdlog.h>
 
 // Kvant Headers
-#include <KvantEngine/Core/ResourceManager.hpp>
+#include <KvantEngine/CoreTypes/Resource.hpp>
 
 namespace Kvant {
   using namespace std;
 
   struct Texture : public Resource {
     Texture (const ResourceHandle handle, const boost::filesystem::path& filepath) : Resource(handle, filepath) {
-      load_image(filepath.string());
+      glGenTextures(1, &m_id);
+      glBindTexture(GL_TEXTURE_2D, m_id);
+
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+      glBindTexture(GL_TEXTURE_2D, 0);
+
+      load_image(filepath);
     }
 
-    void load_image (string file) {
+    ~Texture () {
+      glDeleteTextures(1, &m_id);
+    }
+
+    void load_image (const boost::filesystem::path& filepath) {
+      string file = filepath.string();
       SDL_Surface *tex = IMG_Load(file.c_str());
       if(!tex) {
         spdlog::get("log")->error("Failed to load texture {} with error:\n {}", file, IMG_GetError());
@@ -62,26 +75,19 @@ namespace Kvant {
           break;
       }
 
-      glGenTextures(1, &m_id);
       glBindTexture(GL_TEXTURE_2D, m_id);
-
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
       glTexImage2D(GL_TEXTURE_2D, 0, texture_format, tex->w, tex->h,
                     0, texture_format, GL_UNSIGNED_BYTE, tex->pixels);
 
       SDL_FreeSurface(tex);
+      glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void bind (GLuint unit) {
       assert (unit <= 31);
       glActiveTexture (GL_TEXTURE0 + unit);
       glBindTexture (GL_TEXTURE_2D, m_id);
-    }
-
-    ~Texture () {
-      glDeleteTextures(1, &m_id);
     }
 
     GLuint m_id{0};

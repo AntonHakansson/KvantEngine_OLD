@@ -3,7 +3,7 @@ window:
   title: "KvantEngine"
   width: 1480
   height: 880
-  fullscreen: true
+  fullscreen: false
 resources:
   textures: "../resources/textures/"
   shaders: "../resources/shaders/"
